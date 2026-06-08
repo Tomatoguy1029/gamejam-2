@@ -20,5 +20,5 @@ func reset_state() -> void:
 
 func _set_open(open: bool) -> void:
 	if _collision:
-		_collision.disabled = open
+		_collision.set_deferred("disabled", open)
 	visible = not open
