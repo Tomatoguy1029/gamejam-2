@@ -24,16 +24,16 @@
 extends Node2D
 
 func activate() -> void:
-    # 有効化時の処理
-    pass
+	# 有効化時の処理
+	pass
 
 func deactivate() -> void:
-    # 無効化時の処理
-    pass
+	# 無効化時の処理
+	pass
 
 func reset_state() -> void:
-    # 初期状態に戻す処理
-    pass
+	# 初期状態に戻す処理
+	pass
 ```
 
 ---
