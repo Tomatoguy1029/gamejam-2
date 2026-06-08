@@ -22,24 +22,20 @@ layout_mode = 2
 [node name="TopRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2012292992]
 layout_mode = 2
 
+[node name="ControlLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=486645027]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 48
+text = "WASD: Move,   SPACE: Jump,   R: Retry"
+
 [node name="TimerLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=268696082]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "30.0"
 
-[node name="ControlLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=486645027]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 48
-text = "R: Retry   K: Save record  L: Discard record"
-
-[node name="LoopLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=2106204854]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Loops: 4"
-
 [node name="GhostList" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1559892155]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="PlayEndedPanel" type="PanelContainer" parent="." unique_id=1375234320]
 visible = false

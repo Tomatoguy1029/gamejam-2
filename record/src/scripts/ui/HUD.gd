@@ -1,7 +1,10 @@
 extends CanvasLayer
 
+const GHOST_ROW_COLOR_SIZE := Vector2(80, 80)
+const GHOST_ROW_FONT_SIZE := 55
+const GHOST_ROW_BTN_FONT_SIZE := 50
+
 @onready var _timer_label: Label = $MarginContainer/VBoxContainer/TopRow/TimerLabel
-@onready var _loop_label: Label = $MarginContainer/VBoxContainer/TopRow/LoopLabel
 @onready var _ghost_list: VBoxContainer = $MarginContainer/VBoxContainer/GhostList
 @onready var _play_ended_panel: Control = $PlayEndedPanel
 @onready var _clear_panel: Control = $ClearPanel
@@ -17,6 +20,7 @@ func _ready() -> void:
 	GameManager.ghost_saved.connect(_refresh_ghost_list)
 	GameManager.ghost_discarded.connect(_refresh_ghost_list)
 	GameManager.room_retried.connect(_refresh_ghost_list)
+	GameManager.return_to_title_requested.connect(_refresh_ghost_list)
 
 	_update_panels(GameManager.GameState.MAIN_MENU)
 
@@ -25,10 +29,7 @@ func _process(_delta: float) -> void:
 		_timer_label.text = "%.1f" % LoopManager.remaining_time_sec
 
 func _on_state_changed(state: int) -> void:
-	var gs := state as GameManager.GameState
-	_update_panels(gs)
-	if gs == GameManager.GameState.IDLE or gs == GameManager.GameState.PLAYING:
-		_refresh_loop_label()
+	_update_panels(state as GameManager.GameState)
 
 func _update_panels(state: GameManager.GameState) -> void:
 	_idle_panel.visible = state == GameManager.GameState.IDLE
@@ -37,10 +38,6 @@ func _update_panels(state: GameManager.GameState) -> void:
 		or state == GameManager.GameState.OVER_LIMIT
 	)
 	_clear_panel.visible = state == GameManager.GameState.CLEAR
-
-func _refresh_loop_label() -> void:
-	var remaining := LoopManager.max_ghosts - LoopManager.ghost_count
-	_loop_label.text = "Loops: %d" % remaining
 
 func _refresh_ghost_list() -> void:
 	for child in _ghost_list.get_children():
@@ -51,23 +48,23 @@ func _refresh_ghost_list() -> void:
 		var row := HBoxContainer.new()
 
 		var color_rect := ColorRect.new()
-		color_rect.custom_minimum_size = Vector2(20, 20)
+		color_rect.custom_minimum_size = GHOST_ROW_COLOR_SIZE
 		color_rect.color = ghost.color
 		row.add_child(color_rect)
 
 		var label := Label.new()
 		label.text = "Ghost %d" % (i + 1)
+		label.add_theme_font_size_override("font_size", GHOST_ROW_FONT_SIZE)
 		row.add_child(label)
 
 		var btn := Button.new()
 		btn.text = "×"
-		var idx := i  # クロージャ用にコピー
+		btn.add_theme_font_size_override("font_size", GHOST_ROW_BTN_FONT_SIZE)
+		var idx := i
 		btn.pressed.connect(func(): _on_delete_ghost(idx))
 		row.add_child(btn)
 
 		_ghost_list.add_child(row)
-
-	_refresh_loop_label()
 
 func _on_save_pressed() -> void:
 	var data := RecordingManager.build_ghost_data()
