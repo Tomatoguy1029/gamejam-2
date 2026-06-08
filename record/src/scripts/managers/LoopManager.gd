@@ -77,6 +77,13 @@ func add_ghost(data: GhostData) -> void:
 	data.color = get_color_for_index(data.ghost_index)
 	ghosts.append(data)
 
+## ステージ切り替え時にゴーストとアクターを全消去
+func ClearAll() -> void:
+	ghosts.clear()
+	_despawn_all()
+	loop_tick = 0
+	_clock_running = false
+
 func remove_ghost(index: int) -> void:
 	if index < 0 or index >= ghosts.size():
 		return
