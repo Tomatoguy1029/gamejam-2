@@ -2,9 +2,8 @@
 ## Manager 群の接続・レベルロード・ゲームフロー全体を仲介する。
 extends Node2D
 
-@export var initial_level: PackedScene
-
 var _current_level: Node2D = null
+var _current_level_index: int = 1
 
 func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
@@ -12,10 +11,14 @@ func _ready() -> void:
 	GameManager.next_stage_requested.connect(_on_next_stage_requested)
 	GameManager.return_to_title_requested.connect(_on_return_to_title)
 
-	_load_level(initial_level)
-	GameManager.start_game()  # → IDLE
+	# StageSelect のシグナルを接続
+	var stage_select := $StageSelect
+	stage_select.stage_selected.connect(_on_stage_selected)
 
-func _unhandled_input(event: InputEvent) -> void:
+	# タイトル画面から開始
+	GameManager.change_state(GameManager.GameState.MAIN_MENU)
+
+func _unhandled_input(_event: InputEvent) -> void:
 	if GameManager.current_state == GameManager.GameState.IDLE:
 		if Input.is_action_just_pressed("jump"):
 			_start_loop()
@@ -28,43 +31,58 @@ func _start_loop() -> void:
 
 # ── レベル管理 ────────────────────────────────────────────────────────────────
 
-func _load_level(level_scene: PackedScene) -> void:
-	if level_scene == null:
-		return
+func _load_level_by_index(index: int) -> bool:
+	var path := "res://scenes/levels/Level%03d.tscn" % index
+	if not ResourceLoader.exists(path):
+		return false
 
 	if is_instance_valid(_current_level):
 		_current_level.queue_free()
 
-	_current_level = level_scene.instantiate()
+	_current_level = load(path).instantiate()
 	add_child(_current_level)
-	move_child(_current_level, 0)  # HUD より背面に
+	move_child(_current_level, 0)
 
 	WorldResetManager.set_level(_current_level)
 
-	# SpawnPoint をレベルから読んで LoopManager に反映
 	var spawn := _current_level.get_node_or_null("SpawnPoint")
 	if spawn is Marker2D:
 		LoopManager.base_spawn_position = spawn.global_position
 
-	# Goal エリアにクリア検出を接続
 	var goal := _current_level.get_node_or_null("Goal")
 	if goal is Area2D:
 		goal.body_entered.connect(func(_body): GameManager.end_play(true))
 
+	return true
+
 # ── 状態変化ハンドラ ──────────────────────────────────────────────────────────
 
 func _on_state_changed(_state: int) -> void:
-	pass  # HUD が処理
+	pass
+
+func _on_stage_selected(index: int) -> void:
+	_current_level_index = index
+	LoopManager.ClearAll()
+	if _load_level_by_index(index):
+		GameManager.start_game()  # → IDLE
 
 func _on_room_retried() -> void:
-	# LoopManager / WorldResetManager はシグナルで自動リセット済み
-	_load_level(initial_level)
-	GameManager.start_game()  # → IDLE
+	LoopManager.ClearAll()
+	_load_level_by_index(_current_level_index)
+	GameManager.start_game()
 
 func _on_next_stage_requested() -> void:
-	# TODO: 次のレベルシーンをロード
-	push_warning("次のステージ（未実装）")
+	var next := _current_level_index + 1
+	LoopManager.ClearAll()
+	if _load_level_by_index(next):
+		_current_level_index = next
+		GameManager.start_game()
+	else:
+		# 次のステージがなければタイトルへ
+		GameManager.request_return_to_title()
 
 func _on_return_to_title() -> void:
-	# TODO: タイトルシーンへ遷移
-	push_warning("タイトルへ（未実装）")
+	if is_instance_valid(_current_level):
+		_current_level.queue_free()
+		_current_level = null
+	LoopManager.ClearAll()
