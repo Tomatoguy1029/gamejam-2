@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cfubdbx1leudk"]
+
+[ext_resource type="Script" uid="uid://bheag1uosbtcv" path="res://src/scripts/actors/GhostController.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://duaenyy8uxrts" path="res://icon.svg" id="2_7vjid"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_id11m"]
+size = Vector2(127, 126)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(28.55, 4)
+
+[node name="GhostActor" type="CharacterBody2D" unique_id=1998056396]
+collision_layer = 4
+script = ExtResource("1")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1176126276]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_id11m")
+
+[node name="FloorDetector" type="ShapeCast2D" parent="." unique_id=176079729]
+position = Vector2(0, 65)
+scale = Vector2(3.7, 0.8)
+shape = SubResource("2")
+target_position = Vector2(0, 4)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=200905213]
+modulate = Color(1, 0.3, 0.3, 0.6)
+texture = ExtResource("2_7vjid")

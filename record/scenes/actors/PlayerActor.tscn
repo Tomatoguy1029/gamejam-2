@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cm6ni7vguy4b8"]
+
+[ext_resource type="Script" uid="uid://bbgvbilhwmf1e" path="res://src/scripts/actors/PlayerController.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://duaenyy8uxrts" path="res://icon.svg" id="2_ykkps"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4hdes"]
+size = Vector2(128, 127)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(28.55, 4)
+
+[node name="PlayerActor" type="CharacterBody2D" unique_id=1529008106]
+collision_layer = 2
+collision_mask = 61
+script = ExtResource("1")
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=482345240]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_4hdes")
+
+[node name="FloorDetector" type="ShapeCast2D" parent="." unique_id=1361031109]
+position = Vector2(0, 65)
+scale = Vector2(3.7, 0.8)
+shape = SubResource("2")
+target_position = Vector2(0, 4)
+collision_mask = 61
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=234924842]
+modulate = Color(0.4, 0.8, 1, 1)
+texture = ExtResource("2_ykkps")

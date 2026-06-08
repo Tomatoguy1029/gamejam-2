@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://dkwkjibabp2r2"]
+
+[ext_resource type="Script" uid="uid://vce8wkwo3xe4" path="res://src/scripts/ui/HUD.gd" id="1"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1238800421]
+script = ExtResource("1")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1826193390]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=864526926]
+layout_mode = 2
+
+[node name="TopRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2012292992]
+layout_mode = 2
+
+[node name="TimerLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=268696082]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "30.0"
+
+[node name="ControlLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=486645027]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 48
+text = "R: Retry   K: Save the record"
+
+[node name="LoopLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=2106204854]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Loops: 4"
+
+[node name="GhostList" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1559892155]
+layout_mode = 2
+
+[node name="PlayEndedPanel" type="PanelContainer" parent="." unique_id=1375234320]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -80.0
+offset_right = 200.0
+offset_bottom = 80.0
+
+[node name="VBox" type="VBoxContainer" parent="PlayEndedPanel" unique_id=1184455448]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=1933573831]
+layout_mode = 2
+text = "保存して次へ [K]"
+
+[node name="DiscardButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=680350711]
+layout_mode = 2
+text = "破棄してリトライ [L]"
+
+[node name="ClearPanel" type="PanelContainer" parent="." unique_id=1434195041]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -80.0
+offset_right = 200.0
+offset_bottom = 80.0
+
+[node name="VBox" type="VBoxContainer" parent="ClearPanel" unique_id=1151411500]
+layout_mode = 2
+
+[node name="ClearLabel" type="Label" parent="ClearPanel/VBox" unique_id=667500122]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "CLEAR!"
+horizontal_alignment = 1
+
+[node name="NextStageButton" type="Button" parent="ClearPanel/VBox" unique_id=293161755]
+layout_mode = 2
+text = "次のステージへ"
+
+[node name="TitleButton" type="Button" parent="ClearPanel/VBox" unique_id=158560689]
+layout_mode = 2
+text = "タイトルへ戻る"
+
+[node name="IdlePanel" type="PanelContainer" parent="." unique_id=1405227590]
+visible = false
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.7
+anchor_right = 0.5
+anchor_bottom = 0.7
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = 40.0
+
+[node name="StartLabel" type="Label" parent="IdlePanel" unique_id=720526919]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Space でスタート"
+horizontal_alignment = 1
