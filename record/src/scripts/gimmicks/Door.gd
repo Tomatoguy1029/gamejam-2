@@ -1,5 +1,4 @@
 ## 開閉する扉ギミック。
-## reset_state() / activate() / deactivate() でダックタイピング対応。
 extends AnimatableBody2D
 
 @export var starts_open: bool = false
