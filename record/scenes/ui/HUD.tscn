@@ -31,7 +31,7 @@ text = "30.0"
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 48
-text = "R: Retry   K: Save the record"
+text = "R: Retry   K: Save record  L: Discard record"
 
 [node name="LoopLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=2106204854]
 layout_mode = 2
