@@ -31,7 +31,8 @@ func _get_input() -> Dictionary:
 		move_dir = Input.get_axis("move_left", "move_right"),
 		jump = Input.is_action_just_pressed("jump"),
 		interact = Input.is_action_pressed("interact"),
-		interact_up = Input.is_action_pressed("interact_up"),
+		move_up = Input.is_action_pressed("move_up"),
+		move_down = Input.is_action_pressed("move_down"),
 	}
 
 func _sample_input_frame() -> InputFrame:
@@ -40,5 +41,6 @@ func _sample_input_frame() -> InputFrame:
 		Input.get_axis("move_left", "move_right"),
 		Input.is_action_just_pressed("jump"),
 		Input.is_action_pressed("interact"),
-		Input.is_action_pressed("interact_up"),
+		Input.is_action_pressed("move_up"),
+		Input.is_action_pressed("move_down"),
 	)

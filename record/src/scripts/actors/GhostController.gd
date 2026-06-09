@@ -23,5 +23,6 @@ func _get_input() -> Dictionary:
 		move_dir = frame.move_dir,
 		jump = frame.jump,
 		interact = frame.interact,
-		interact_up = frame.interact_up,
+		move_up = frame.move_up,
+		move_down = frame.move_down,
 	}

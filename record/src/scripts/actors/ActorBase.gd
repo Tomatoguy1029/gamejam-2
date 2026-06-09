@@ -5,6 +5,11 @@ extends CharacterBody2D
 @export var move_speed: float = 300.0
 @export var jump_velocity: float = -700.0
 @export var gravity: float = 1800.0
+@export var climb_speed: float = 200.0
+
+var _ladder_count: int = 0
+var is_on_ladder: bool:
+	get: return _ladder_count > 0
 
 ## 足元の接地判定（ShapeCast2D を下向きに設置）
 @onready var floor_detector: ShapeCast2D = $FloorDetector
@@ -28,22 +33,29 @@ func _physics_process(delta: float) -> void:
 
 ## サブクラスがオーバーライドして入力を返す。
 func _get_input() -> Dictionary:
-	return {move_dir = 0.0, jump = false, interact = false, interact_up = false}
+	return {move_dir = 0.0, jump = false, interact = false, move_up = false, move_down = false}
 
 func _apply_physics(input: Dictionary, delta: float) -> void:
 	var vel := velocity
 
-	# 重力
-	if not is_grounded:
-		vel.y += gravity * delta
-	elif vel.y > 0.0:
-		vel.y = 0.0
+	if is_on_ladder:
+		vel.x = input.get("move_dir", 0.0) * move_speed
+		if input.get("move_up", false):
+			vel.y = -climb_speed
+		elif input.get("move_down", false):
+			vel.y = climb_speed
+		else:
+			vel.y = 0.0
+	else:
+		# 通常：重力・ジャンプ
+		if not is_grounded:
+			vel.y += gravity * delta
+		elif vel.y > 0.0:
+			vel.y = 0.0
 
-	# ジャンプ
-	if input.get("jump", false) and is_grounded:
-		vel.y = jump_velocity
+		if input.get("jump", false) and is_grounded:
+			vel.y = jump_velocity
 
-	# 水平移動
-	vel.x = input.get("move_dir", 0.0) * move_speed
+		vel.x = input.get("move_dir", 0.0) * move_speed
 
 	velocity = vel
