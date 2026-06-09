@@ -7,3 +7,4 @@
 | `Lamp.tscn` | `Lamp.gd` | activate で点灯 / deactivate で消灯する表示 |
 | `Goal.tscn` | — | クリア判定エリア |
 | `Platform.tscn` | `Platform.gd` | activate で出現 / deactivate で消える足場 |
+| `Ladder.tscn` | `Ladder.gd` | エリア内で interact_up を押すと上に登れる梯子 |
