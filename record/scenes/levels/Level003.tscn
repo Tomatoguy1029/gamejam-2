@@ -276,7 +276,7 @@ tile_map_data = PackedByteArray("AAAAAA4AAAAAAAAAAAAAAA8AAAAAAAEAAAAAABAAAAAAAAE
 tile_set = SubResource("TileSet_oefhq")
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1653474597]
-position = Vector2(696, 762)
+position = Vector2(634, 760)
 
 [node name="Goal" parent="." unique_id=72810682 instance=ExtResource("2_7o1wq")]
 position = Vector2(1866, 520)
@@ -297,7 +297,7 @@ position = Vector2(1620.0001, 693)
 scale = Vector2(5, 5)
 
 [node name="PressurePlate" parent="Node" unique_id=1838987600 instance=ExtResource("3_gwbf4")]
-position = Vector2(1051, 862)
+position = Vector2(995, 862.00006)
 scale = Vector2(3.23, 8.06)
 target_paths = Array[NodePath]([NodePath("../Platform1-1"), NodePath("../Platform1-2"), NodePath("../Lamp")])
 
