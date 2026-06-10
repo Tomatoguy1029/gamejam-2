@@ -13,6 +13,7 @@ const GHOST_ROW_BTN_FONT_SIZE := 50
 func _ready() -> void:
 	$PlayEndedPanel/VBox/SaveButton.pressed.connect(_on_save_pressed)
 	$PlayEndedPanel/VBox/DiscardButton.pressed.connect(_on_discard_pressed)
+	$PlayEndedPanel/VBox/ReturnTitleButton.pressed.connect(GameManager.request_return_to_title)
 	$ClearPanel/VBox/NextStageButton.pressed.connect(GameManager.request_next_stage)
 	$ClearPanel/VBox/TitleButton.pressed.connect(GameManager.request_return_to_title)
 
