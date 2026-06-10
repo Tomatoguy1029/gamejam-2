@@ -57,5 +57,15 @@ func _apply_physics(input: Dictionary, delta: float) -> void:
 			vel.y = jump_velocity
 
 		vel.x = input.get("move_dir", 0.0) * move_speed
+		vel.x += _get_platform_velocity().x
 
 	velocity = vel
+
+func _get_platform_velocity() -> Vector2:
+	if not is_grounded or floor_detector == null:
+		return Vector2.ZERO
+	for i in floor_detector.get_collision_count():
+		var collider := floor_detector.get_collider(i)
+		if collider is CharacterBody2D:
+			return collider.velocity
+	return Vector2.ZERO

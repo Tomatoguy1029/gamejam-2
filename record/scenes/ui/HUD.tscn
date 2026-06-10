@@ -60,6 +60,10 @@ text = "保存して次へ [K]"
 layout_mode = 2
 text = "破棄してリトライ [L]"
 
+[node name="ReturnTitleButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=312948571]
+layout_mode = 2
+text = "タイトルへ戻る"
+
 [node name="ClearPanel" type="PanelContainer" parent="." unique_id=1434195041]
 visible = false
 anchors_preset = 8
