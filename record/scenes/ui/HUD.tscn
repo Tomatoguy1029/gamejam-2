@@ -1,9 +1,19 @@
 [gd_scene format=3 uid="uid://dkwkjibabp2r2"]
 
 [ext_resource type="Script" uid="uid://vce8wkwo3xe4" path="res://src/scripts/ui/HUD.gd" id="1"]
+[ext_resource type="Script" uid="uid://ywcemb40f50o" path="res://scenes/ui/camera_frame.gd" id="2_atyv1"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1238800421]
 script = ExtResource("1")
+
+[node name="CameraFrame" type="Control" parent="." unique_id=80791153]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_atyv1")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1826193390]
 anchors_preset = 15

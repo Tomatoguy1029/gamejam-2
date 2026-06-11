@@ -10,7 +10,8 @@ const GHOST_ROW_BTN_FONT_SIZE := 50
 @onready var _clear_panel: Control = $ClearPanel
 @onready var _idle_panel: Control = $IdlePanel
 enum SaveEffect { WHITEOUT, NOISE, TEXT_SHAKE }
-@export var save_effect: SaveEffect = SaveEffect.WHITEOUT
+@export var save_effect: SaveEffect = SaveEffect.WHITEOUT	
+@onready var _camera_frame: Control = $CameraFrame
 
 var _flash_rect: ColorRect
 var _noise_rect: ColorRect
@@ -47,6 +48,7 @@ func _update_panels(state: GameManager.GameState) -> void:
 		or state == GameManager.GameState.OVER_LIMIT
 	)
 	_clear_panel.visible = state == GameManager.GameState.CLEAR
+	_camera_frame.visible = state == GameManager.GameState.PLAYING 
 
 func _refresh_ghost_list() -> void:
 	for child in _ghost_list.get_children():
