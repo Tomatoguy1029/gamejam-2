@@ -288,6 +288,15 @@ hint_text = "Press \"WASD\" to Move"
 control_label = "WASD: Move"
 
 [node name="Tutorial2" parent="." unique_id=83090429 instance=ExtResource("4_haoqb")]
-position = Vector2(1295, 481)
+position = Vector2(640, 480)
 hint_text = "Press \"SPACE\" to Jump"
 control_label = "SPACE: Jump"
+
+[node name="Tutorial3" parent="." unique_id=225428849 instance=ExtResource("4_haoqb")]
+position = Vector2(985, 481)
+hint_text = "Reach the green zone !"
+
+[node name="Tutorial4" parent="." unique_id=323914219 instance=ExtResource("4_haoqb")]
+position = Vector2(1589, 482)
+hint_text = "Press \"R\" to Retry, and then..."
+control_label = "R: Retry"

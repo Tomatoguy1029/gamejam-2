@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="2_wfif7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(203, 160)
+size = Vector2(164, 160)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_frqkw"]
 atlas = ExtResource("2_wfif7")
@@ -27,7 +27,7 @@ collision_mask = 2
 script = ExtResource("1_tut")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=535110064]
-position = Vector2(0.5, 0)
+position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_trigger")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1117459915]
@@ -35,10 +35,10 @@ scale = Vector2(4.5, 4.5)
 texture = SubResource("AtlasTexture_frqkw")
 
 [node name="Bubble" type="PanelContainer" parent="." unique_id=1498303769]
-offset_left = -122.0
-offset_top = -217.0
-offset_right = 250.0
-offset_bottom = -122.0
+offset_left = -152.0
+offset_top = -209.0
+offset_right = 321.0
+offset_bottom = -114.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bubble")
 
@@ -50,6 +50,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Polygon2D" type="Polygon2D" parent="Bubble" unique_id=1852205083]
-position = Vector2(74, -1)
+position = Vector2(110, -1)
 color = Color(0.972549, 0.972549, 0.972549, 1)
 polygon = PackedVector2Array(93, 93, 147, 96, 73, 165)

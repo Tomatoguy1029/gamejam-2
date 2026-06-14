@@ -3,8 +3,8 @@
 ## 角の枠・十字・REC・バッテリーは子ノードが担当。
 extends Control
 
-## 常に表示しておく操作説明（チュートリアル習得分の後ろに付く）。空なら無し。
-@export var base_controls: String = "R: Retry"
+## 常に表示しておく操作説明
+@export var base_controls: String
 ## 全ステージ解放後（チュートリアル完了後）に固定表示する操作説明。
 @export var fixed_controls: String = "WASD: Move   SPACE: Jump   R: Retry"
 
