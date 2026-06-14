@@ -35,7 +35,7 @@ func _draw_corners() -> void:
 	draw_line(Vector2(w - m, h - m), Vector2(w - m, h - m - l), line_color, line_width)
 
 func _draw_crosshair() -> void:
-	var c := size * 0.5          # 画面中央
+	var c := size * 0.5          # 画面中央　
 	var s := crosshair_size
 	draw_line(c - Vector2(s, 0), c + Vector2(s, 0), line_color, line_width)
 	draw_line(c - Vector2(0, s), c + Vector2(0, s), line_color, line_width)
