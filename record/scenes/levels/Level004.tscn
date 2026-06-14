@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b57x5oco76nju" path="res://scenes/gimmicks/Platform.tscn" id="3_u7qom"]
 [ext_resource type="PackedScene" uid="uid://c0fuhccktyx30" path="res://scenes/gimmicks/PressurePlate.tscn" id="4_bvql2"]
 [ext_resource type="PackedScene" uid="uid://cotsptdv4aqua" path="res://scenes/gimmicks/Ladder.tscn" id="6_fg4sx"]
+[ext_resource type="Script" uid="uid://8m0h6do2wu4p" path="res://src/scripts/game/Level.gd" id="level_cfg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d7rbc"]
 texture = ExtResource("1_a310k")
@@ -421,6 +422,7 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_u7qom")
 
 [node name="Level004" type="Node2D" unique_id=877338732]
+script = ExtResource("level_cfg")
 
 [node name="Terrain" type="TileMapLayer" parent="." unique_id=279786837]
 scale = Vector2(4, 4)

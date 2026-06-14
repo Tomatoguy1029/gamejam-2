@@ -1,7 +1,7 @@
 ## ループ・ゴーストのライフサイクル管理と共通クロック。Autoload。
 extends Node
 
-@export var max_ghosts: int = 4
+@export var max_ghosts: int = 3
 ## アクター幅 + マージン（px）
 @export var spawn_offset_x: float = 64.0
 @export var base_spawn_position: Vector2 = Vector2(200.0, 1000.0)
@@ -55,9 +55,9 @@ func _ready() -> void:
 	ghost_actor_scene = load("res://scenes/actors/GhostActor.tscn")
 
 	GameManager.loop_started.connect(_on_loop_started)
-	GameManager.ghost_saved.connect(_on_ghost_saved)
 	GameManager.ghost_discarded.connect(_on_ghost_discarded)
 	GameManager.room_retried.connect(_on_room_retried)
+	GameManager.state_changed.connect(_on_state_changed)
 
 func _physics_process(_delta: float) -> void:
 	if not _clock_running:
@@ -72,10 +72,25 @@ func _physics_process(_delta: float) -> void:
 func set_spawn_parent(parent: Node) -> void:
 	_spawn_parent = parent
 
-func add_ghost(data: GhostData) -> void:
+## ゴーストを1体追加する。上限に達している場合は追加せず false を返す。
+func add_ghost(data: GhostData) -> bool:
+	if is_at_limit:
+		return false
 	data.ghost_index = ghosts.size()
 	data.color = get_color_for_index(data.ghost_index)
 	ghosts.append(data)
+	return true
+
+## 録画(GhostData)を保存する。
+## 判定は「追加する前に空き枠があるか」で行う。最後の枠を埋める保存は正常扱い。
+##   - 空き枠あり → 保存して ghost_saved（noise 演出）+ IDLE
+##   - 空き枠なし → 保存できず over_limit（録画容量なし演出）のみ
+func save_recording(data: GhostData) -> void:
+	if is_at_limit:
+		GameManager.trigger_over_limit()  # 空き枠なし＝保存不可
+		return
+	add_ghost(data)
+	GameManager.save_ghost()  # noise 演出 + IDLE
 
 ## ステージ切り替え時にゴーストとアクターを全消去
 func ClearAll() -> void:
@@ -100,18 +115,20 @@ func get_spawn_position(index: int) -> Vector2:
 
 # ── イベントハンドラ ──────────────────────────────────────────────────────────
 
+## IDLE に入った時点でワールドを初期化し、アクターを配置する。
+## こうすることで、保存/破棄/削除の「その瞬間」にリセットが見え、
+## space 押下後にリセットが走る違和感が無くなる。
+func _on_state_changed(state: int) -> void:
+	if state == GameManager.GameState.IDLE:
+		_despawn_all()
+		_spawn_all()
+		loop_tick = 0
+		_clock_running = false
+
 func _on_loop_started(_loop_index: int) -> void:
-	_despawn_all()
-	_spawn_all()
+	# アクターは IDLE 時に配置済み。space ではクロックを開始するだけ。
 	loop_tick = 0
 	_clock_running = true
-
-func _on_ghost_saved() -> void:
-	# add_ghost() は呼び出し元（HUD or PlayerController）が既に実行済み
-	if is_at_limit:
-		GameManager.trigger_over_limit()
-	else:
-		GameManager.change_state(GameManager.GameState.IDLE)
 
 func _on_ghost_discarded() -> void:
 	pass  # 枠消費なし・状態変化は GameManager.discard_ghost() 済み

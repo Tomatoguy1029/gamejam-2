@@ -1,4 +1,5 @@
 [gd_scene format=4 uid="uid://d1rgwx24pb5uk"]
+[ext_resource type="Script" path="res://src/scripts/game/Level.gd" id="level_cfg"]
 
 [ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="1_kta4a"]
 [ext_resource type="PackedScene" uid="uid://dkflfcgpiybju" path="res://scenes/gimmicks/Goal.tscn" id="2_7o1wq"]
@@ -266,6 +267,7 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_7o1wq")
 
 [node name="Level001" type="Node2D" unique_id=877338732]
+script = ExtResource("level_cfg")
 position = Vector2(4, 407)
 
 [node name="Terrain" type="TileMapLayer" parent="." unique_id=1840116716]

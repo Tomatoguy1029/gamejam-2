@@ -3,8 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="1_fgpoh"]
 [ext_resource type="PackedScene" uid="uid://c0fuhccktyx30" path="res://scenes/gimmicks/PressurePlate.tscn" id="2_2d2to"]
 [ext_resource type="PackedScene" path="res://scenes/gimmicks/Lamp.tscn" id="3_ks7qy"]
-[ext_resource type="PackedScene" uid="uid://dkflfcgpiybju" path="res://scenes/gimmicks/goal.tscn" id="4_b30vt"]
+[ext_resource type="PackedScene" uid="uid://dkflfcgpiybju" path="res://scenes/gimmicks/Goal.tscn" id="4_b30vt"]
 [ext_resource type="PackedScene" path="res://scenes/gimmicks/Door.tscn" id="5_pm0fs"]
+[ext_resource type="Script" uid="uid://8m0h6do2wu4p" path="res://src/scripts/game/Level.gd" id="level_cfg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d7rbc"]
 texture = ExtResource("1_fgpoh")
@@ -268,7 +269,9 @@ physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_d7rbc")
 
-[node name="Level001" type="Node2D" unique_id=877338732]
+[node name="Level002" type="Node2D" unique_id=877338732]
+script = ExtResource("level_cfg")
+max_ghosts = 3
 
 [node name="Terrain" type="TileMapLayer" parent="." unique_id=279786837]
 scale = Vector2(4, 4)
