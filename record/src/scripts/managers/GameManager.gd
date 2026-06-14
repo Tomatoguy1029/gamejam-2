@@ -17,6 +17,7 @@ signal loop_started(loop_index: int)
 signal play_ended(reached_goal: bool)
 signal ghost_saved()
 signal ghost_discarded()
+signal over_limit()
 signal room_retried()
 signal cleared()
 signal next_stage_requested()
@@ -51,6 +52,7 @@ func discard_ghost() -> void:
 
 func trigger_over_limit() -> void:
 	_change_state(GameState.OVER_LIMIT)
+	over_limit.emit()
 
 ## OverLimit 状態でゴーストを削除後、次ループへ続行
 func continue_after_delete() -> void:

@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://x8nxr571rm1v"]
+
+[ext_resource type="Script" uid="uid://d4jddlaw1cg1i" path="res://src/scripts/effects/RetryEffect.gd" id="1_root"]
+[ext_resource type="Script" uid="uid://bmc1yec4oidt" path="res://src/scripts/effects/postprocess/Whiteout.gd" id="2_white"]
+[ext_resource type="Script" uid="uid://bx3jji7em66x1" path="res://src/scripts/effects/postprocess/Noise.gd" id="3_noise"]
+[ext_resource type="Script" uid="uid://tjttf6i1w3dc" path="res://src/scripts/effects/postprocess/TextShake.gd" id="4_text"]
+[ext_resource type="Shader" uid="uid://b0piwdtd2c5qh" path="res://src/scripts/shaders/Noise.gdshader" id="5_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_noise"]
+shader = ExtResource("5_shader")
+shader_parameter/intensity = 1.0
+shader_parameter/wave_amplitude = 0.03
+shader_parameter/wave_frequency = 60.0
+shader_parameter/wave_speed = 5.0
+shader_parameter/band_count = 5.0
+shader_parameter/band_speed = 0.29
+shader_parameter/band_width = 0.1430000067925
+
+[sub_resource type="LabelSettings" id="LabelSettings_oikax"]
+font_size = 48
+font_color = Color(0.6793056, 0.019908046, 1.92523e-07, 1)
+
+[node name="RetryEffect" type="Node" unique_id=854502571 node_paths=PackedStringArray("on_save", "on_discard", "on_over_limit")]
+script = ExtResource("1_root")
+on_save = NodePath("Noise")
+on_discard = NodePath("Whiteout")
+on_over_limit = NodePath("OverLimit")
+
+[node name="Whiteout" type="CanvasLayer" parent="." unique_id=1256282212]
+layer = 100
+script = ExtResource("2_white")
+
+[node name="ColorRect" type="ColorRect" parent="Whiteout" unique_id=950730143]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Noise" type="CanvasLayer" parent="." unique_id=1947365092]
+layer = 100
+script = ExtResource("3_noise")
+_duration = 1.0
+
+[node name="ColorRect" type="ColorRect" parent="Noise" unique_id=1725277996]
+visible = false
+material = SubResource("ShaderMaterial_noise")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="OverLimit" type="CanvasLayer" parent="." unique_id=2134768845]
+layer = 100
+script = ExtResource("4_text")
+
+[node name="Label" type="Label" parent="OverLimit" unique_id=447965841]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "録画容量がありません"
+label_settings = SubResource("LabelSettings_oikax")
+horizontal_alignment = 1
+vertical_alignment = 1
