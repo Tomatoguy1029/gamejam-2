@@ -124,6 +124,10 @@ func _on_state_changed(state: int) -> void:
 		_spawn_all()
 		loop_tick = 0
 		_clock_running = false
+	elif state == GameManager.GameState.MAIN_MENU:
+		# タイトルに戻ったらゴーストを全消去する。
+		# （この後 HUD のリスト再描画が走り、Ghost1 等の行が消える）
+		ClearAll()
 
 func _on_loop_started(_loop_index: int) -> void:
 	# アクターは IDLE 時に配置済み。space ではクロックを開始するだけ。

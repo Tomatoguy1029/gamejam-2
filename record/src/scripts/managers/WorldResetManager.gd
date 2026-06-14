@@ -5,7 +5,10 @@ extends Node
 var _level: Node = null
 
 func _ready() -> void:
-	GameManager.loop_started.connect(func(_idx): reset_all())
+	GameManager.state_changed.connect(func(state):
+		if state == GameManager.GameState.IDLE:
+			reset_all()
+	)
 	GameManager.room_retried.connect(reset_all)
 
 func set_level(level: Node) -> void:
