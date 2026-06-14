@@ -2,9 +2,12 @@ extends CanvasLayer
 
 ## 動画アイコン（白塗りSVG）。modulate でゴースト色に染める。
 const MOVIE_ICON: Texture2D = preload("res://src/assets/movieplay.svg")
-const ICON_SIZE := Vector2(140, 104)   # viewBox 168x125 に近い比率
-const NUM_FONT_SIZE := 40
-const DEL_FONT_SIZE := 32
+const DASHED_BOX := preload("res://src/scripts/ui/dashed_box.gd")
+
+## 動画アイコン／空きスロットのサイズ。HUD ノードのインスペクタで調整できる。
+@export var icon_size: Vector2 = Vector2(140, 104)
+@export var num_font_size: int = 40
+@export var del_font_size: int = 32
 
 @onready var _play_ended_panel: Control = $PlayEndedPanel
 @onready var _clear_panel: Control = $ClearPanel
@@ -40,17 +43,43 @@ func _update_panels(state: GameManager.GameState) -> void:
 	)
 	_clear_panel.visible = state == GameManager.GameState.CLEAR
 	_camera_frame.visible = state == GameManager.GameState.PLAYING
-	# 枠が一杯のときは Yes(保存)を無効化（削除して空きを作る必要がある）
+	_update_yes_button()
+	# パネル表示時にスロット（録画0でも点線枠）を必ず作り直す
+	if _play_ended_panel.visible:
+		_refresh_ghost_icons()
+
+func _update_yes_button() -> void:
 	_yes_button.disabled = LoopManager.is_at_limit
 
-## 保存済みゴーストを「色付き動画アイコン＋番号＋×」で並べ直す。
+## 常に「録画可能数（max_ghosts）」ぶんのスロットを並べる。
 func _refresh_ghost_icons() -> void:
 	for child in _ghost_icons.get_children():
 		child.queue_free()
-	var shown: int = mini(LoopManager.ghost_count, LoopManager.max_ghosts)
-	for i in shown:
-		var ghost: GhostData = LoopManager.ghosts[i]
-		_ghost_icons.add_child(_make_icon_cell(i, ghost.color))
+	var maxn: int = maxi(0, LoopManager.max_ghosts)
+	var saved: int = mini(LoopManager.ghost_count, maxn)
+	for i in maxn:
+		if i < saved:
+			var ghost: GhostData = LoopManager.ghosts[i]
+			_ghost_icons.add_child(_make_icon_cell(i, ghost.color))
+		else:
+			_ghost_icons.add_child(_make_empty_cell())
+
+## 空き録画スロット（点線の角丸四角）のセル。
+func _make_empty_cell() -> Control:
+	var cell := VBoxContainer.new()
+	cell.add_theme_constant_override("separation", 4)
+
+	var box: Control = DASHED_BOX.new()
+	box.custom_minimum_size = icon_size
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(box)
+
+	# 番号ラベルと高さを揃えるための空ラベル
+	var pad := Label.new()
+	pad.add_theme_font_size_override("font_size", num_font_size)
+	cell.add_child(pad)
+
+	return cell
 
 ## 1ゴースト分のセル（動画アイコン＋右上×、下に番号）を作る。
 func _make_icon_cell(index: int, color: Color) -> Control:
@@ -58,13 +87,13 @@ func _make_icon_cell(index: int, color: Color) -> Control:
 	cell.add_theme_constant_override("separation", 4)
 
 	var holder := Control.new()
-	holder.custom_minimum_size = ICON_SIZE
+	holder.custom_minimum_size = icon_size
 
 	var tex := TextureRect.new()
 	tex.texture = MOVIE_ICON
 	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tex.modulate = color                       # 動画アイコンをゴースト色に
+	tex.modulate = color
 	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tex.set_anchors_preset(Control.PRESET_FULL_RECT)
 	holder.add_child(tex)
@@ -72,7 +101,7 @@ func _make_icon_cell(index: int, color: Color) -> Control:
 	# 右上の×（削除）ボタン
 	var del := Button.new()
 	del.text = "×"
-	del.add_theme_font_size_override("font_size", DEL_FONT_SIZE)
+	del.add_theme_font_size_override("font_size", del_font_size)
 	del.anchor_left = 1.0
 	del.anchor_right = 1.0
 	del.offset_left = -36.0
@@ -88,7 +117,7 @@ func _make_icon_cell(index: int, color: Color) -> Control:
 	# 下の番号
 	var num := Label.new()
 	num.text = str(index + 1)
-	num.add_theme_font_size_override("font_size", NUM_FONT_SIZE)
+	num.add_theme_font_size_override("font_size", num_font_size)
 	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cell.add_child(num)
 
@@ -103,6 +132,7 @@ func _on_discard_pressed() -> void:
 	GameManager.discard_ghost()
 
 func _on_delete_ghost(index: int) -> void:
+	# GameState は変えない。削除後もそのまま Yes/No を選べるようにする。
 	LoopManager.remove_ghost(index)
-	GameManager.continue_after_delete()
 	_refresh_ghost_icons()
+	_update_yes_button()  # 空きができたら Yes を黄緑に戻す
