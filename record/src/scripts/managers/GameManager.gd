@@ -25,6 +25,8 @@ signal return_to_title_requested()
 
 var current_state: GameState = GameState.MAIN_MENU
 
+var input_locked: bool = false
+
 # ── 状態遷移 API ────────────────────────────────────────────────────────────
 
 func start_game() -> void:
@@ -42,17 +44,17 @@ func end_play(reached_goal: bool) -> void:
 		_change_state(GameState.PLAY_ENDED)
 		play_ended.emit(false)
 
-## LoopManager が GhostData を追加した後に呼ぶ。枠チェックは LoopManager 側。
 func save_ghost() -> void:
 	ghost_saved.emit()
+	_change_state(GameState.IDLE)
 
 func discard_ghost() -> void:
-	_change_state(GameState.IDLE)
 	ghost_discarded.emit()
+	_change_state(GameState.IDLE)
 
 func trigger_over_limit() -> void:
-	_change_state(GameState.OVER_LIMIT)
 	over_limit.emit()
+	_change_state(GameState.OVER_LIMIT)
 
 ## OverLimit 状態でゴーストを削除後、次ループへ続行
 func continue_after_delete() -> void:

@@ -16,15 +16,26 @@ shader_parameter/band_count = 5.0
 shader_parameter/band_speed = 0.29
 shader_parameter/band_width = 0.1430000067925
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_noise_long"]
+shader = ExtResource("5_shader")
+shader_parameter/intensity = 1.0
+shader_parameter/wave_amplitude = 0.03
+shader_parameter/wave_frequency = 60.0
+shader_parameter/wave_speed = 5.0
+shader_parameter/band_count = 5.0
+shader_parameter/band_speed = 0.29
+shader_parameter/band_width = 0.1430000067925
+
 [sub_resource type="LabelSettings" id="LabelSettings_oikax"]
 font_size = 48
 font_color = Color(0.6793056, 0.019908046, 1.92523e-07, 1)
 
-[node name="RetryEffect" type="Node" unique_id=854502571 node_paths=PackedStringArray("on_save", "on_discard", "on_over_limit")]
+[node name="RetryEffect" type="Node" unique_id=854502571 node_paths=PackedStringArray("on_save", "on_discard", "on_over_limit", "on_intro")]
 script = ExtResource("1_root")
 on_save = NodePath("Noise")
 on_discard = NodePath("Whiteout")
 on_over_limit = NodePath("OverLimit")
+on_intro = NodePath("NoiseLong")
 
 [node name="Whiteout" type="CanvasLayer" parent="." unique_id=1256282212]
 layer = 100
@@ -54,6 +65,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="NoiseLong" type="CanvasLayer" parent="." unique_id=471369493]
+layer = 100
+script = ExtResource("3_noise")
+_duration = 2.0
+lock_input = true
+
+[node name="ColorRect" type="ColorRect" parent="NoiseLong" unique_id=316778044]
+visible = false
+material = SubResource("ShaderMaterial_noise_long")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="OverLimit" type="CanvasLayer" parent="." unique_id=2134768845]
 layer = 100
 script = ExtResource("4_text")
@@ -66,7 +93,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 48
-text = "録画容量がありません"
+text = "MEMORY FULL
+Delete a ghost to continue"
 label_settings = SubResource("LabelSettings_oikax")
 horizontal_alignment = 1
 vertical_alignment = 1

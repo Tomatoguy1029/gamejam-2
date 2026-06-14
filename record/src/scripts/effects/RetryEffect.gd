@@ -7,6 +7,8 @@ extends Node
 @export var on_discard: PostProcess
 ## 保存枠が一杯（over_limit）のときに再生する演出ノード。
 @export var on_over_limit: PostProcess
+## チュートリアル導入時に一度だけ流す長い演出ノード（入力ブロックあり）。
+@export var on_intro: PostProcess
 
 func _ready() -> void:
 	GameManager.ghost_saved.connect(func() -> void: _play(on_save))
@@ -16,3 +18,7 @@ func _ready() -> void:
 func _play(effect: PostProcess) -> void:
 	if effect != null:
 		effect.play()
+
+func play_intro() -> void:
+	if on_intro != null:
+		await on_intro.play()
