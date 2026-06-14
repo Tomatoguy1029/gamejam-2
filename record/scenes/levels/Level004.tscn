@@ -423,6 +423,7 @@ sources/0 = SubResource("TileSetAtlasSource_u7qom")
 
 [node name="Level004" type="Node2D" unique_id=877338732]
 script = ExtResource("level_cfg")
+max_ghosts = 1
 
 [node name="Terrain" type="TileMapLayer" parent="." unique_id=279786837]
 scale = Vector2(4, 4)
