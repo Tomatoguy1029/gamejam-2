@@ -1,8 +1,9 @@
 [gd_scene format=4 uid="uid://d1rgwx24pb5uk"]
-[ext_resource type="Script" path="res://src/scripts/game/Level.gd" id="level_cfg"]
 
 [ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="1_kta4a"]
 [ext_resource type="PackedScene" uid="uid://dkflfcgpiybju" path="res://scenes/gimmicks/Goal.tscn" id="2_7o1wq"]
+[ext_resource type="PackedScene" uid="uid://d07pe46mmym2i" path="res://scenes/gimmicks/Tutorial.tscn" id="4_haoqb"]
+[ext_resource type="Script" uid="uid://8m0h6do2wu4p" path="res://src/scripts/game/Level.gd" id="level_cfg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7o1wq"]
 texture = ExtResource("1_kta4a")
@@ -91,7 +92,6 @@ texture = ExtResource("1_kta4a")
 7:3/0 = 0
 7:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 8:3/0 = 0
-8:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 9:3/0 = 0
 9:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 0:4/0 = 0
@@ -267,8 +267,8 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_7o1wq")
 
 [node name="Level001" type="Node2D" unique_id=877338732]
-script = ExtResource("level_cfg")
 position = Vector2(4, 407)
+script = ExtResource("level_cfg")
 
 [node name="Terrain" type="TileMapLayer" parent="." unique_id=1840116716]
 scale = Vector2(4, 4)
@@ -276,8 +276,18 @@ tile_map_data = PackedByteArray("AAAAAAkAAAAAAAEAAAABAAkAAAAAAAEAAAACAAkAAAAAAAE
 tile_set = SubResource("TileSet_3tikf")
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=100000001]
-position = Vector2(177, 261)
+position = Vector2(178, 273)
 
 [node name="Goal" parent="." unique_id=72810682 instance=ExtResource("2_7o1wq")]
-position = Vector2(1569, -40)
-scale = Vector2(6.97, 1)
+position = Vector2(1530, -27)
+scale = Vector2(7.64, 1)
+
+[node name="Tutorial" parent="." unique_id=1531609307 instance=ExtResource("4_haoqb")]
+position = Vector2(311, 480)
+hint_text = "Press \"WASD\" to Move"
+control_label = "WASD: Move"
+
+[node name="Tutorial2" parent="." unique_id=83090429 instance=ExtResource("4_haoqb")]
+position = Vector2(1295, 481)
+hint_text = "Press \"SPACE\" to Jump"
+control_label = "SPACE: Jump"

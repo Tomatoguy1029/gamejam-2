@@ -19,6 +19,8 @@ signal ghost_saved()
 signal ghost_discarded()
 signal over_limit()
 signal room_retried()
+signal tutorial_hint(label: String)
+signal stages_unlocked()
 signal cleared()
 signal next_stage_requested()
 signal return_to_title_requested()
@@ -26,6 +28,15 @@ signal return_to_title_requested()
 var current_state: GameState = GameState.MAIN_MENU
 
 var input_locked: bool = false
+
+## 全ステージ解放済みか（ステージ1クリアで true。永続化はしないので起動ごとにリセット）
+var all_stages_unlocked: bool = false
+
+## 全ステージを解放する（ステージ1クリア時に呼ぶ）
+func unlock_all_stages() -> void:
+	if not all_stages_unlocked:
+		all_stages_unlocked = true
+		stages_unlocked.emit()
 
 # ── 状態遷移 API ────────────────────────────────────────────────────────────
 

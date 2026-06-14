@@ -10,6 +10,7 @@ func _ready() -> void:
 	GameManager.room_retried.connect(_on_room_retried)
 	GameManager.next_stage_requested.connect(_on_next_stage_requested)
 	GameManager.return_to_title_requested.connect(_on_return_to_title)
+	GameManager.cleared.connect(_on_cleared)
 
 	# StageSelect のシグナルを接続
 	var stage_select := $StageSelect
@@ -66,6 +67,10 @@ func _load_level_by_index(index: int) -> bool:
 
 func _on_state_changed(_state: int) -> void:
 	pass
+
+func _on_cleared() -> void:
+	if _current_level_index == 1:
+		GameManager.unlock_all_stages()
 
 func _on_stage_selected(index: int) -> void:
 	_current_level_index = index

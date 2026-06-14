@@ -40,6 +40,10 @@ func _build_stage_list() -> void:
 		var num_str := file_name.trim_prefix("Level").trim_suffix(".tscn")
 		var index := num_str.to_int()
 
+		# 初回（未解放）はステージ1だけ表示。クリアで全ステージ解放。
+		if not GameManager.all_stages_unlocked and index != 1:
+			continue
+
 		var btn := Button.new()
 		btn.text = "Stage %d" % index
 		btn.add_theme_font_size_override("font_size", STAGE_NAME_FONT_SIZE)
