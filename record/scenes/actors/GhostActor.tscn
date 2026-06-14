@@ -11,6 +11,7 @@ size = Vector2(28.55, 4)
 
 [node name="GhostActor" type="CharacterBody2D" unique_id=1998056396]
 collision_layer = 4
+platform_on_leave = 0
 script = ExtResource("1")
 metadata/_edit_lock_ = true
 

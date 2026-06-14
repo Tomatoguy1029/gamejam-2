@@ -12,6 +12,7 @@ size = Vector2(28.55, 4)
 [node name="PlayerActor" type="CharacterBody2D" unique_id=1529008106]
 collision_layer = 2
 collision_mask = 61
+platform_on_leave = 0
 script = ExtResource("1")
 metadata/_edit_lock_ = true
 
