@@ -1,51 +1,46 @@
 [gd_scene format=3 uid="uid://dkwkjibabp2r2"]
 
 [ext_resource type="Script" uid="uid://vce8wkwo3xe4" path="res://src/scripts/ui/HUD.gd" id="1"]
-[ext_resource type="Script" uid="uid://ywcemb40f50o" path="res://scenes/ui/camera_frame.gd" id="2_atyv1"]
+[ext_resource type="PackedScene" uid="uid://cq0frmrec1234" path="res://scenes/ui/CameraFrame.tscn" id="2_atyv1"]
+
+[sub_resource type="StyleBoxFlat" id="sb_neutral"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+bg_color = Color(0.21960784, 0.23921569, 0.2784314, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="sb_yes"]
+content_margin_left = 28.0
+content_margin_top = 12.0
+content_margin_right = 28.0
+content_margin_bottom = 12.0
+bg_color = Color(0.45, 0.78, 0.25, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="sb_no"]
+content_margin_left = 28.0
+content_margin_top = 12.0
+content_margin_right = 28.0
+content_margin_bottom = 12.0
+bg_color = Color(0.85, 0.22, 0.18, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="HUD" type="CanvasLayer" unique_id=1238800421]
 script = ExtResource("1")
+icon_size = Vector2(135, 90)
 
-[node name="CameraFrame" type="Control" parent="." unique_id=80791153]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("2_atyv1")
-
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1826193390]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=864526926]
-layout_mode = 2
-
-[node name="TopRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2012292992]
-layout_mode = 2
-
-[node name="ControlLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=486645027]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 48
-text = "WASD: Move,   SPACE: Jump,   R: Retry"
-
-[node name="TimerLabel" type="Label" parent="MarginContainer/VBoxContainer/TopRow" unique_id=268696082]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "30.0"
-
-[node name="GhostList" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1559892155]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="CameraFrame" parent="." unique_id=271746589 instance=ExtResource("2_atyv1")]
 
 [node name="PlayEndedPanel" type="PanelContainer" parent="." unique_id=1375234320]
 visible = false
@@ -54,25 +49,75 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -80.0
-offset_right = 200.0
-offset_bottom = 80.0
+offset_left = -320.0
+offset_top = -250.0
+offset_right = 320.0
+offset_bottom = 250.0
 
 [node name="VBox" type="VBoxContainer" parent="PlayEndedPanel" unique_id=1184455448]
 layout_mode = 2
-
-[node name="SaveButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=1933573831]
-layout_mode = 2
-text = "保存して次へ [K]"
-
-[node name="DiscardButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=680350711]
-layout_mode = 2
-text = "破棄してリトライ [L]"
+theme_override_constants/separation = 24
+alignment = 1
 
 [node name="ReturnTitleButton" type="Button" parent="PlayEndedPanel/VBox" unique_id=312948571]
 layout_mode = 2
-text = "タイトルへ戻る"
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("sb_neutral")
+theme_override_styles/pressed = SubResource("sb_neutral")
+theme_override_styles/hover = SubResource("sb_neutral")
+text = " ‹ Return to Title"
+
+[node name="SavePrompt" type="Label" parent="PlayEndedPanel/VBox" unique_id=900000001]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Save the play?"
+horizontal_alignment = 1
+
+[node name="YesNo" type="HBoxContainer" parent="PlayEndedPanel/VBox" unique_id=900000003]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="PlayEndedPanel/VBox/YesNo" unique_id=1933573831]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("sb_yes")
+theme_override_styles/pressed = SubResource("sb_yes")
+theme_override_styles/hover = SubResource("sb_yes")
+text = "Yes (\"k\")"
+
+[node name="DiscardButton" type="Button" parent="PlayEndedPanel/VBox/YesNo" unique_id=680350711]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("sb_no")
+theme_override_styles/pressed = SubResource("sb_no")
+theme_override_styles/hover = SubResource("sb_no")
+text = "No (\"l\")"
+
+[node name="Spacer" type="Control" parent="PlayEndedPanel/VBox" unique_id=900000004]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Divider" type="ColorRect" parent="PlayEndedPanel/VBox/Spacer" unique_id=900000005]
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.5
+anchor_right = 0.9
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.35)
+
+[node name="GhostIcons" type="HBoxContainer" parent="PlayEndedPanel/VBox" unique_id=900000002]
+layout_mode = 2
+theme_override_constants/separation = 28
+alignment = 1
 
 [node name="ClearPanel" type="PanelContainer" parent="." unique_id=1434195041]
 visible = false

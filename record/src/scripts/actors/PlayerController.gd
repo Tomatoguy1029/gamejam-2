@@ -8,6 +8,11 @@ func _ready() -> void:
 	GameManager.loop_started.connect(func(_idx): _loop_tick = 0)
 
 func _physics_process(delta: float) -> void:
+	# 入力ロック中は操作・録画・各キーを受け付けない
+	if GameManager.input_locked:
+		super._physics_process(delta)
+		return
+
 	if GameManager.current_state == GameManager.GameState.PLAYING:
 		RecordingManager.record_frame(_sample_input_frame())
 		_loop_tick += 1
@@ -15,12 +20,10 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_just_pressed("retry"):
 			GameManager.end_play(false)
 
-	# K / L キーは PlayEnded 状態でのみ有効
-	if GameManager.current_state == GameManager.GameState.PLAY_ENDED:
+	if (GameManager.current_state == GameManager.GameState.PLAY_ENDED
+			or GameManager.current_state == GameManager.GameState.OVER_LIMIT):
 		if Input.is_action_just_pressed("save_ghost"):
-			var data := RecordingManager.build_ghost_data()
-			LoopManager.add_ghost(data)
-			GameManager.save_ghost()
+			LoopManager.save_recording(RecordingManager.build_ghost_data())
 		elif Input.is_action_just_pressed("discard_ghost"):
 			GameManager.discard_ghost()
 

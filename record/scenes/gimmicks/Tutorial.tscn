@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://d07pe46mmym2i"]
+
+[ext_resource type="Script" uid="uid://kmawfhfsfvoo" path="res://src/scripts/gimmicks/Tutorial.gd" id="1_tut"]
+[ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="2_wfif7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(164, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_frqkw"]
+atlas = ExtResource("2_wfif7")
+region = Rect2(128.48378, 49.095303, 15.465591, 15.842991)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
+content_margin_left = 24.0
+content_margin_top = 18.0
+content_margin_right = 24.0
+content_margin_bottom = 18.0
+bg_color = Color(1, 1, 1, 0.96)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Tutorial" type="Area2D" unique_id=225428849]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_tut")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=535110064]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1117459915]
+scale = Vector2(4.5, 4.5)
+texture = SubResource("AtlasTexture_frqkw")
+
+[node name="Bubble" type="PanelContainer" parent="." unique_id=1498303769]
+offset_left = -152.0
+offset_top = -209.0
+offset_right = 321.0
+offset_bottom = -114.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bubble")
+
+[node name="Label" type="Label" parent="Bubble" unique_id=201101081]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.12, 0.12, 1)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Polygon2D" type="Polygon2D" parent="Bubble" unique_id=1852205083]
+position = Vector2(110, -1)
+color = Color(0.972549, 0.972549, 0.972549, 1)
+polygon = PackedVector2Array(93, 93, 147, 96, 73, 165)

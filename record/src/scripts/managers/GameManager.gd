@@ -17,12 +17,26 @@ signal loop_started(loop_index: int)
 signal play_ended(reached_goal: bool)
 signal ghost_saved()
 signal ghost_discarded()
+signal over_limit()
 signal room_retried()
+signal tutorial_hint(label: String)
+signal stages_unlocked()
 signal cleared()
 signal next_stage_requested()
 signal return_to_title_requested()
 
 var current_state: GameState = GameState.MAIN_MENU
+
+var input_locked: bool = false
+
+## 全ステージ解放済みか（ステージ1クリアで true。永続化はしないので起動ごとにリセット）
+var all_stages_unlocked: bool = false
+
+## 全ステージを解放する（ステージ1クリア時に呼ぶ）
+func unlock_all_stages() -> void:
+	if not all_stages_unlocked:
+		all_stages_unlocked = true
+		stages_unlocked.emit()
 
 # ── 状態遷移 API ────────────────────────────────────────────────────────────
 
@@ -41,15 +55,16 @@ func end_play(reached_goal: bool) -> void:
 		_change_state(GameState.PLAY_ENDED)
 		play_ended.emit(false)
 
-## LoopManager が GhostData を追加した後に呼ぶ。枠チェックは LoopManager 側。
 func save_ghost() -> void:
 	ghost_saved.emit()
+	_change_state(GameState.IDLE)
 
 func discard_ghost() -> void:
-	_change_state(GameState.IDLE)
 	ghost_discarded.emit()
+	_change_state(GameState.IDLE)
 
 func trigger_over_limit() -> void:
+	over_limit.emit()
 	_change_state(GameState.OVER_LIMIT)
 
 ## OverLimit 状態でゴーストを削除後、次ループへ続行

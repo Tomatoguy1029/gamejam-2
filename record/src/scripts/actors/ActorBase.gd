@@ -1,28 +1,24 @@
 ## プレイヤー・ゴースト共通の物理挙動。
 ## _get_input() をオーバーライドすることで入力源を切り替える。
+##
+## 接地・足場追従は Godot 標準の CharacterBody2D 機能に任せる：
+##   - is_on_floor() で接地判定
+##   - move_and_slide() が「今乗っている足場（横移動・ジャンプ中のゴースト含む）
+##     の速度」を自動で motion に加算してくれる（ムービングプラットフォーム機能）
+## そのため velocity は常に「足場に対する相対速度」だけを表せばよく、
+## 「上に乗っている時だけ足場速度を手で合成する」ような場当たり実装は不要。
 extends CharacterBody2D
 
 @export var move_speed: float = 300.0
 @export var jump_velocity: float = -700.0
 @export var gravity: float = 1800.0
 @export var climb_speed: float = 200.0
+## 横方向の加減速（px/s^2）。既定値は旧実装の move_speed * 8 相当。
+@export var accel: float = 2400.0
 
 var _ladder_count: int = 0
 var is_on_ladder: bool:
 	get: return _ladder_count > 0
-
-## 足元の接地判定（ShapeCast2D を下向きに設置）
-@onready var floor_detector: ShapeCast2D = $FloorDetector
-
-func _ready() -> void:
-	# FloorDetector のマスクを本体の collision_mask に自動同期する。
-	# これにより PlayerActor は tscn 設定値（61）が、
-	# GhostActor は LoopManager が動的設定した値が引き継がれる。
-	if floor_detector:
-		floor_detector.collision_mask = collision_mask
-
-var is_grounded: bool:
-	get: return floor_detector != null and floor_detector.is_colliding()
 
 func _physics_process(delta: float) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
@@ -36,36 +32,25 @@ func _get_input() -> Dictionary:
 	return {move_dir = 0.0, jump = false, interact = false, move_up = false, move_down = false}
 
 func _apply_physics(input: Dictionary, delta: float) -> void:
-	var vel := velocity
-
+	# はしご：重力を無視して上下移動
 	if is_on_ladder:
-		vel.x = input.get("move_dir", 0.0) * move_speed
+		velocity.x = input.get("move_dir", 0.0) * move_speed
 		if input.get("move_up", false):
-			vel.y = -climb_speed
+			velocity.y = -climb_speed
 		elif input.get("move_down", false):
-			vel.y = climb_speed
+			velocity.y = climb_speed
 		else:
-			vel.y = 0.0
-	else:
-		# 通常：重力・ジャンプ
-		if not is_grounded:
-			vel.y += gravity * delta
-		elif vel.y > 0.0:
-			vel.y = 0.0
+			velocity.y = 0.0
+		return
 
-		if input.get("jump", false) and is_grounded:
-			vel.y = jump_velocity
+	# 重力（空中のみ）。接地中は move_and_slide が縦速度を受け止める。
+	if not is_on_floor():
+		velocity.y += gravity * delta
 
-		vel.x = input.get("move_dir", 0.0) * move_speed
-		vel.x += _get_platform_velocity().x
+	# ジャンプ
+	if input.get("jump", false) and is_on_floor():
+		velocity.y = jump_velocity
 
-	velocity = vel
-
-func _get_platform_velocity() -> Vector2:
-	if not is_grounded or floor_detector == null:
-		return Vector2.ZERO
-	for i in floor_detector.get_collision_count():
-		var collider := floor_detector.get_collider(i)
-		if collider is CharacterBody2D:
-			return collider.velocity
-	return Vector2.ZERO
+	# 横移動
+	var target_x: float = input.get("move_dir", 0.0) * move_speed
+	velocity.x = move_toward(velocity.x, target_x, accel * delta)

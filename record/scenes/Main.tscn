@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://tfup1ej1msq5" path="res://src/scripts/game/Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://dkwkjibabp2r2" path="res://scenes/ui/HUD.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://ef3i2ydw4xfv" path="res://scenes/ui/StageSelect.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://x8nxr571rm1v" path="res://scenes/PostProcess/RetryEffect.tscn" id="4"]
 
 [node name="Main" type="Node2D" unique_id=351399651]
 script = ExtResource("1")
@@ -10,3 +11,5 @@ script = ExtResource("1")
 [node name="HUD" parent="." unique_id=543164918 instance=ExtResource("2")]
 
 [node name="StageSelect" parent="." unique_id=1207371615 instance=ExtResource("3")]
+
+[node name="RetryEffect" parent="." instance=ExtResource("4")]
