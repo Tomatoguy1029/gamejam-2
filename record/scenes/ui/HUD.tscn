@@ -87,7 +87,7 @@ theme_override_font_sizes/font_size = 44
 theme_override_styles/normal = SubResource("sb_yes")
 theme_override_styles/pressed = SubResource("sb_yes")
 theme_override_styles/hover = SubResource("sb_yes")
-text = "Yes (\"k\")"
+text = "Yes (\"K\")"
 
 [node name="DiscardButton" type="Button" parent="PlayEndedPanel/VBox/YesNo" unique_id=680350711]
 layout_mode = 2
@@ -96,7 +96,7 @@ theme_override_font_sizes/font_size = 44
 theme_override_styles/normal = SubResource("sb_no")
 theme_override_styles/pressed = SubResource("sb_no")
 theme_override_styles/hover = SubResource("sb_no")
-text = "No (\"l\")"
+text = "No (\"L\")"
 
 [node name="Spacer" type="Control" parent="PlayEndedPanel/VBox" unique_id=900000004]
 custom_minimum_size = Vector2(0, 32)
@@ -105,6 +105,7 @@ mouse_filter = 2
 
 [node name="Divider" type="ColorRect" parent="PlayEndedPanel/VBox/Spacer" unique_id=900000005]
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.5
 anchor_right = 0.9
@@ -163,5 +164,5 @@ offset_bottom = 40.0
 [node name="StartLabel" type="Label" parent="IdlePanel" unique_id=720526919]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Space でスタート"
+text = "Press \"SPACE\" to Start"
 horizontal_alignment = 1
