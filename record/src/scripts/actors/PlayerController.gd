@@ -10,6 +10,7 @@ const REWIND_DURATION := 3.0   # 逆再生アニメの総尺（秒・固定）
 var _trail: PackedVector2Array = []
 
 func _ready() -> void:
+	super._ready()  # movement_stats の適用（ActorBase._ready）
 	GameManager.loop_started.connect(func(_idx):
 		_loop_tick = 0
 		_trail.clear()

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bheag1uosbtcv" path="res://src/scripts/actors/GhostController.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://duaenyy8uxrts" path="res://icon.svg" id="2_7vjid"]
+[ext_resource type="Resource" uid="uid://cmovestats0001" path="res://src/data/player_movement.tres" id="3_stats"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_id11m"]
 size = Vector2(127, 126)
@@ -13,6 +14,7 @@ size = Vector2(28.55, 4)
 collision_layer = 4
 platform_on_leave = 0
 script = ExtResource("1")
+movement_stats = ExtResource("3_stats")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1176126276]
