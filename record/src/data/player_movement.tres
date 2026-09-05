@@ -1,11 +1,8 @@
-[gd_resource type="Resource" script_class="MovementStats" load_steps=2 format=3 uid="uid://cmovestats0001"]
+[gd_resource type="Resource" script_class="MovementStats" format=3 uid="uid://byyfdj38ofn7h"]
 
-[ext_resource type="Script" path="res://src/scripts/data/MovementStats.gd" id="1_stats"]
+[ext_resource type="Script" uid="uid://boidxbjlivhek" path="res://src/scripts/data/MovementStats.gd" id="1_stats"]
 
 [resource]
 script = ExtResource("1_stats")
-move_speed = 300.0
-jump_velocity = -700.0
-gravity = 1800.0
-climb_speed = 200.0
-accel = 2400.0
+move_speed = 450.0
+gravity = 1700.0
