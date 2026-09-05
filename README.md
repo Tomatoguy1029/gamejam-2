@@ -8,6 +8,16 @@
 - 言語: GDScript
 - 素材: [Brackeys' Platformer Bundle](record/src/assets/brackeys_platformer_assets/)（ライセンスは同ディレクトリの `LICENSE & CREDITS.txt` を参照）
 
+## ドキュメント
+
+| ドキュメント | 内容 |
+| ------------ | ---- |
+| [要件定義](docs/requirement.md) | 何を満たすべきかの定義。コアメカニクス・ゴーストの挙動ルール・UI/演出要件、および当初設計からの差分 |
+| [アーキテクチャ](docs/architecture.md) | 内部構造。マネージャ層・状態機械・録画再生のデータフロー・衝突レイヤー設計・既知の制約 |
+| [詳細仕様書](docs/SPEC.md) | 画面表示・入力・物理・定数まで含む網羅的な仕様。数値の一次情報源 |
+| [ギミック追加手順](record/src/md/gimmick-guide.md) / [一覧](record/src/md/gimmick-list.md) | 新しいギミックの作り方と既存ギミックの一覧 |
+| [AGENTS.md](AGENTS.md) | AI エージェント向けの作業指示（規約・不変条件・検証手順） |
+
 ## 実行方法
 
 1. Godot 4.6 以降を用意する
@@ -44,11 +54,13 @@ record/
 └── src/
     ├── scripts/
     │   ├── managers/        # GameManager, LoopManager, RecordingManager, WorldResetManager（Autoload）
+    │   ├── game/            # Main（仲介）, Level（ステージ設定）
     │   ├── actors/          # ActorBase と Player / Ghost のサブクラス
     │   ├── data/            # InputFrame, GhostData, MovementStats, CollisionLayers
     │   ├── gimmicks/
     │   ├── ui/
-    │   └── effects/
+    │   ├── effects/         # RetryEffect と postprocess/（Noise, Whiteout, TextShake）
+    │   └── shaders/         # Noise.gdshader
     ├── data/                # MovementStats の .tres
     ├── md/                  # ギミック追加手順・一覧
     └── assets/
