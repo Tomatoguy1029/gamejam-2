@@ -16,9 +16,22 @@ extends CharacterBody2D
 ## 横方向の加減速（px/s^2）。既定値は旧実装の move_speed * 8 相当。
 @export var accel: float = 2400.0
 
+## 移動パラメータのリソース。割り当てるとこの値で上書きする（src/data/*.tres）。
+## プレイヤーとゴーストで同じ .tres を共有すれば挙動が一致する。
+@export var movement_stats: MovementStats
+
 var _ladder_count: int = 0
 var is_on_ladder: bool:
 	get: return _ladder_count > 0
+
+func _ready() -> void:
+	# stats が割り当てられていれば、その値で各パラメータを上書き
+	if movement_stats != null:
+		move_speed = movement_stats.move_speed
+		jump_velocity = movement_stats.jump_velocity
+		gravity = movement_stats.gravity
+		climb_speed = movement_stats.climb_speed
+		accel = movement_stats.accel
 
 func _physics_process(delta: float) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
