@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/scripts/gimmicks/TilePressurePlate.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(88, 26)
+
+[node name="TilePressurePlate" type="Area2D"]
+collision_layer = 0
+collision_mask = 62
+script = ExtResource("1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("1")

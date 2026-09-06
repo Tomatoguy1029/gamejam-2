@@ -48,6 +48,8 @@ func start_game() -> void:
 	_change_state(GameState.IDLE)
 
 func start_loop(loop_index: int) -> void:
+	if LoopManager.is_spawning or input_locked:
+		return
 	_change_state(GameState.PLAYING)
 	loop_started.emit(loop_index)
 
