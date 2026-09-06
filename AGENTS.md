@@ -22,6 +22,7 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 | [docs/SPEC.md](docs/SPEC.md) | 画面・数値まで含む網羅的な詳細仕様 | 具体的な挙動や定数を確認したいとき |
 | [record/src/md/gimmick-guide.md](record/src/md/gimmick-guide.md) | ギミック追加の手順書 | ギミックを追加するとき |
 | [record/src/md/gimmick-list.md](record/src/md/gimmick-list.md) | 既存ギミック一覧 | 同上 |
+| [docs/testing.md](docs/testing.md) | テストの置き場所・書き方・粒度・一覧 | テストを書く・回すとき |
 | [docs/debug-tools.md](docs/debug-tools.md) | デバッグツールの一覧と使い方 | デバッグ機能を使う・作るとき |
 
 **コードを書き始める前に `docs/architecture.md` の「設計方針」と「既知の制約」に目を通すこと。** この設計は決定論的な録画再生を成立させるために意図的な制約を置いており、それを知らずに書き換えると再生が壊れる。
@@ -64,7 +65,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 /Applications/Godot.app/Contents/MacOS/Godot --path record --editor
 ```
 
-- **テストは `record/tests/` にある。** `test_*.gd` を置けば `./run_tests.sh` が自動で拾う。各テストは `Node` を継承し `func run_tests(t) -> void:` を実装し、**末尾で必ず `t.done()` を呼ぶ**（実行時エラーで中断したことを検出するため）。
+- **テストの運用は [docs/testing.md](docs/testing.md) にまとめてある。** 置き場所・書き方・粒度の方針・今あるテストの一覧はそちらを見ること。
 - テストで確認できるのはロジックまで。**見た目・操作感の確認はプレイが必要**。
 - ヘッドレス実行では `uid://cmovestats0001` に関する警告が 2 件出るが、**これは既知で無害**（テキストパスで解決される）。新しいエラーや警告が増えていないかで判断すること。
 - ゲームロジックの検証はプレイが必要。エージェントがプレイできない場合は、**何を人間に確認してほしいかを明示して報告する**（例：「Stage 3 で 2 本目のゴーストがスイッチを踏み続けるか」）。
@@ -120,7 +121,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 ステージルートの `max_ghosts` をインスペクタで変更する（現状 Stage 1: 3 / Stage 2: 2 / Stage 3: 2 / Stage 4: 1）。
 
 ### テストを追加する
-`record/tests/test_<対象>.gd` を作り、`Node` を継承して `func run_tests(t) -> void:` を実装する。冒頭に `const TestAssert := preload("res://tests/Assert.gd")` を置き、`t.ok()` / `t.eq()` で確認して**末尾で `t.done()`** を呼ぶ。Autoload や物理フレームを使うテストは `await get_tree().physics_frame` でよい。`./run_tests.sh` で実行する。
+`record/tests/test_<対象>.gd` を作り、`Node` を継承して `func run_tests(t) -> void:` を実装し、**末尾で必ず `t.done()`** を呼ぶ。書き方の雛形・粒度の判断・Autoload の後始末は [docs/testing.md](docs/testing.md) を参照。
 
 ### デバッグツールを追加する
 すべて `OS.has_feature("editor")` でガードし、製品ビルドに出ないようにする。既存クラスにデバッグ用のメソッドやフラグを生やさず、既存の公開 API とシグナルだけで実現する。
@@ -137,6 +138,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 |---|---|
 | ギミックを追加・変更した | `record/src/md/gimmick-list.md`（手順が変わったなら `gimmick-guide.md` も） |
 | デバッグツールを追加・変更した | `docs/debug-tools.md`（使い方を短く追記する） |
+| テストを追加・削除した | `docs/testing.md` の「今あるテスト」一覧を更新する |
 | 仕様・ルールを変えた | `docs/requirement.md`、`docs/SPEC.md` |
 | 構造・責務・データフローを変えた | `docs/architecture.md` |
 | 操作・実行方法・ディレクトリを変えた | `README.md` |
