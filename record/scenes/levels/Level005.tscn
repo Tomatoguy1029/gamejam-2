@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://c17288mux4qhd"]
+[gd_scene format=4 uid="uid://cpory6butfyxk"]
 
 [ext_resource type="Script" uid="uid://8m0h6do2wu4p" path="res://src/scripts/game/Level.gd" id="1_dqg41"]
 [ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="2_xd8bt"]
