@@ -44,7 +44,11 @@ func _exit_tree() -> void:
 		_button = null
 
 func _on_pressed() -> void:
-	DebugLaunch.request(DebugLaunch.resolve_stage(_current_scene_path()))
+	var stage: int = DebugLaunch.resolve_stage(_current_scene_path())
+	# 押したことが出力パネルで分かるようにしておく。プラグインが古いまま
+	# 掴まれていると押下自体が届かないので、切り分けの手がかりになる。
+	print("[Debug Launcher] Stage %d で起動します" % stage)
+	DebugLaunch.request(stage)
 	EditorInterface.play_main_scene()
 
 ## 編集中のシーンのパス。保存できるものは先に保存する。
