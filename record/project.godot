@@ -32,6 +32,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="Record"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/debug_launcher/plugin.cfg")
+
 [input]
 
 move_left={

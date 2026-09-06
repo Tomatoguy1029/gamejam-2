@@ -12,16 +12,17 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 
 ---
 
-## 2. 最初に読むもの
+## 2. 作業前に読むもの
 
-| ドキュメント | 内容 | 読むべきとき |
-|---|---|---|
-| [README.md](README.md) | 概要・実行方法・操作・実装の工夫 | 常に |
-| [docs/requirement.md](docs/requirement.md) | 要件定義。何を満たすべきか。当初設計からの差分表つき | 仕様を変える・機能を足すとき |
-| [docs/architecture.md](docs/architecture.md) | 内部構造。マネージャ層・状態機械・録画再生・衝突レイヤー | コードを触る前に必ず |
-| [docs/SPEC.md](docs/SPEC.md) | 画面・数値まで含む網羅的な詳細仕様 | 具体的な挙動や定数を確認したいとき |
-| [record/src/md/gimmick-guide.md](record/src/md/gimmick-guide.md) | ギミック追加の手順書 | ギミックを追加するとき |
-| [record/src/md/gimmick-list.md](record/src/md/gimmick-list.md) | 既存ギミック一覧 | 同上 |
+ドキュメントの一覧と各文書の内容は [README.md](README.md) にある。ここでは**どの作業のときに何を読むか**だけを示す。
+
+| これからすること | 先に読むもの |
+|---|---|
+| **コードを触る（内容を問わず）** | [docs/architecture.md](docs/architecture.md) の「設計方針」と「既知の制約」 |
+| 仕様・ルールを変える、機能を足す | [docs/requirement.md](docs/requirement.md) |
+| 定数や具体的な挙動を確認する | [docs/SPEC.md](docs/SPEC.md)（数値の一次情報源） |
+| ギミックを追加・変更する | [gimmick-guide.md](record/src/md/gimmick-guide.md)（手順）と [gimmick-list.md](record/src/md/gimmick-list.md)（既存一覧） |
+| デバッグ機能を使う・作る | [docs/debug-tools.md](docs/debug-tools.md) |
 
 **コードを書き始める前に `docs/architecture.md` の「設計方針」と「既知の制約」に目を通すこと。** この設計は決定論的な録画再生を成立させるために意図的な制約を置いており、それを知らずに書き換えると再生が壊れる。
 
@@ -60,7 +61,8 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 /Applications/Godot.app/Contents/MacOS/Godot --path record --editor
 ```
 
-- **自動テストは存在しない。** 変更の検証は上記のヘッドレス読み込みと、実際のプレイで行う。
+- **実装中の検証は使い捨てで行う。** 一時的な `.gd` / `.tscn` をプロジェクト直下に作り、ヘッドレスで実行して結果を報告し、**確認後に削除する**。git に残すテストが要ると判断したときは、勝手に足さず相談すること。
+- **残す価値があるのはゲームの挙動や崩したくない不変条件のテストだけ。** デバッグ機能・エディタ拡張・UI の見た目には作らない。
 - ヘッドレス実行では `uid://cmovestats0001` に関する警告が 2 件出るが、**これは既知で無害**（テキストパスで解決される）。新しいエラーや警告が増えていないかで判断すること。
 - ゲームロジックの検証はプレイが必要。エージェントがプレイできない場合は、**何を人間に確認してほしいかを明示して報告する**（例：「Stage 3 で 2 本目のゴーストがスイッチを踏み続けるか」）。
 - `record/.godot/` は生成物。コミットしない（`.gitignore` 済み）。
@@ -114,6 +116,11 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 ### ステージごとの録画上限を変える
 ステージルートの `max_ghosts` をインスペクタで変更する（現状 Stage 1: 3 / Stage 2: 2 / Stage 3: 2 / Stage 4: 1）。
 
+### デバッグツールを追加する
+すべて `OS.has_feature("editor")` でガードし、製品ビルドに出ないようにする。既存クラスにデバッグ用のメソッドやフラグを生やさず、既存の公開 API とシグナルだけで実現する。
+ショートカットが要るなら `DebugMenu.gd` に `@export var <名前>_shortcut: Shortcut` を足し、`_build_shortcuts()` に `_bind()` を1行足す（`project.godot` の入力マップは使わない）。
+**完了後に [docs/debug-tools.md](docs/debug-tools.md) へ使い方（起動方法・できること・注意点）を追記すること。**
+
 ---
 
 ## 8. ドキュメントの更新義務
@@ -123,6 +130,8 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 | 変更した内容 | 更新するドキュメント |
 |---|---|
 | ギミックを追加・変更した | `record/src/md/gimmick-list.md`（手順が変わったなら `gimmick-guide.md` も） |
+| デバッグツールを追加・変更した | `docs/debug-tools.md`（使い方を短く追記する） |
+| ドキュメントを新設した | `README.md` の一覧に追記する。その文書を読むべき**作業のきっかけ**があるなら、本ファイル §2 の表にも足す |
 | 仕様・ルールを変えた | `docs/requirement.md`、`docs/SPEC.md` |
 | 構造・責務・データフローを変えた | `docs/architecture.md` |
 | 操作・実行方法・ディレクトリを変えた | `README.md` |
@@ -139,6 +148,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 - コミット・プッシュはユーザーに指示されたときだけ行う。
 - `main` へ直接コミットしない。
 - `record/.godot/`、`.DS_Store` はコミットしない。
+- **仕様書・設計メモなどの作業用ドキュメントは `docs/wip/` に置く。**このディレクトリは `.gitignore` 済みで、コミットしない。リポジトリに残すのは確定した内容だけにする。
 
 ---
 
