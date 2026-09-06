@@ -16,6 +16,7 @@
 | [アーキテクチャ](docs/architecture.md) | 内部構造。マネージャ層・状態機械・録画再生のデータフロー・衝突レイヤー設計・既知の制約 |
 | [詳細仕様書](docs/SPEC.md) | 画面表示・入力・物理・定数まで含む網羅的な仕様。数値の一次情報源 |
 | [ギミック追加手順](record/src/md/gimmick-guide.md) / [一覧](record/src/md/gimmick-list.md) | 新しいギミックの作り方と既存ギミックの一覧 |
+| [デバッグツール](docs/debug-tools.md) | 開発中に使えるデバッグ機能の一覧と使い方 |
 | [AGENTS.md](AGENTS.md) | AI エージェント向けの作業指示（規約・不変条件・検証手順） |
 
 ## 実行方法

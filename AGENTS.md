@@ -22,6 +22,7 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 | [docs/SPEC.md](docs/SPEC.md) | 画面・数値まで含む網羅的な詳細仕様 | 具体的な挙動や定数を確認したいとき |
 | [record/src/md/gimmick-guide.md](record/src/md/gimmick-guide.md) | ギミック追加の手順書 | ギミックを追加するとき |
 | [record/src/md/gimmick-list.md](record/src/md/gimmick-list.md) | 既存ギミック一覧 | 同上 |
+| [docs/debug-tools.md](docs/debug-tools.md) | デバッグツールの一覧と使い方 | デバッグ機能を使う・作るとき |
 
 **コードを書き始める前に `docs/architecture.md` の「設計方針」と「既知の制約」に目を通すこと。** この設計は決定論的な録画再生を成立させるために意図的な制約を置いており、それを知らずに書き換えると再生が壊れる。
 
@@ -114,6 +115,10 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 ### ステージごとの録画上限を変える
 ステージルートの `max_ghosts` をインスペクタで変更する（現状 Stage 1: 3 / Stage 2: 2 / Stage 3: 2 / Stage 4: 1）。
 
+### デバッグツールを追加する
+すべて `OS.has_feature("editor")` でガードし、製品ビルドに出ないようにする。既存クラスにデバッグ用のメソッドやフラグを生やさず、既存の公開 API とシグナルだけで実現する。
+**完了後に [docs/debug-tools.md](docs/debug-tools.md) へ使い方（起動方法・できること・注意点）を追記すること。**
+
 ---
 
 ## 8. ドキュメントの更新義務
@@ -123,6 +128,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 | 変更した内容 | 更新するドキュメント |
 |---|---|
 | ギミックを追加・変更した | `record/src/md/gimmick-list.md`（手順が変わったなら `gimmick-guide.md` も） |
+| デバッグツールを追加・変更した | `docs/debug-tools.md`（使い方を短く追記する） |
 | 仕様・ルールを変えた | `docs/requirement.md`、`docs/SPEC.md` |
 | 構造・責務・データフローを変えた | `docs/architecture.md` |
 | 操作・実行方法・ディレクトリを変えた | `README.md` |
@@ -139,6 +145,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 - コミット・プッシュはユーザーに指示されたときだけ行う。
 - `main` へ直接コミットしない。
 - `record/.godot/`、`.DS_Store` はコミットしない。
+- **仕様書・設計メモなどの作業用ドキュメントは `docs/wip/` に置く。**このディレクトリは `.gitignore` 済みで、コミットしない。リポジトリに残すのは確定した内容だけにする。
 
 ---
 
