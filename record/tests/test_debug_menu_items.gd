@@ -56,6 +56,15 @@ func run_tests(t: TestAssert) -> void:
 	t.eq("HUD のスロットは上限ぶんだけ並ぶ（保存済み2 > 上限1 でも壊れない）",
 		icons.get_child_count(), 1)
 
+	# ── 状態表示 ──────────────────────────────────────────
+	GameManager.change_state(GameManager.GameState.IDLE)
+	menu.set_open(true)
+	t.ok("現在のステージが表示される", _find_label(items, "Level003") != null)
+	t.ok("保存済みゴーストが 本数/上限 で表示される",
+		_find_label(items, "%d / %d" % [LoopManager.ghost_count, LoopManager.max_ghosts]) != null)
+	t.ok("GameState が名前で表示される", _find_label(items, "IDLE") != null)
+	menu.set_open(false)
+
 	main.queue_free()
 	await get_tree().process_frame
 	GameManager.current_state = GameManager.GameState.MAIN_MENU
@@ -72,6 +81,15 @@ func _find_button(root: Node, text: String) -> Button:
 		if child is Button and (child as Button).text == text:
 			return child
 		var found: Button = _find_button(child, text)
+		if found != null:
+			return found
+	return null
+
+func _find_label(root: Node, text: String) -> Label:
+	for child in root.get_children():
+		if child is Label and (child as Label).text == text:
+			return child
+		var found: Label = _find_label(child, text)
 		if found != null:
 			return found
 	return null

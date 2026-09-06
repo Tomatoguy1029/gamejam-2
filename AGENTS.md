@@ -54,6 +54,9 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applications/Godot.app/Contents/MacOS/Godot`。
 
 ```bash
+# テストを実行する（record/tests/ の test_*.gd を一括実行。失敗があれば exit 1）
+./run_tests.sh
+
 # スクリプト・シーンが壊れていないかの確認（画面を開かずに読み込んで終了）
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path record --quit
 
@@ -61,7 +64,8 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 /Applications/Godot.app/Contents/MacOS/Godot --path record --editor
 ```
 
-- **自動テストは存在しない。** 変更の検証は上記のヘッドレス読み込みと、実際のプレイで行う。
+- **テストは `record/tests/` にある。** `test_*.gd` を置けば `./run_tests.sh` が自動で拾う。各テストは `Node` を継承し `func run_tests(t) -> void:` を実装し、**末尾で必ず `t.done()` を呼ぶ**（実行時エラーで中断したことを検出するため）。
+- テストで確認できるのはロジックまで。**見た目・操作感の確認はプレイが必要**。
 - ヘッドレス実行では `uid://cmovestats0001` に関する警告が 2 件出るが、**これは既知で無害**（テキストパスで解決される）。新しいエラーや警告が増えていないかで判断すること。
 - ゲームロジックの検証はプレイが必要。エージェントがプレイできない場合は、**何を人間に確認してほしいかを明示して報告する**（例：「Stage 3 で 2 本目のゴーストがスイッチを踏み続けるか」）。
 - `record/.godot/` は生成物。コミットしない（`.gitignore` 済み）。
@@ -114,6 +118,9 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 
 ### ステージごとの録画上限を変える
 ステージルートの `max_ghosts` をインスペクタで変更する（現状 Stage 1: 3 / Stage 2: 2 / Stage 3: 2 / Stage 4: 1）。
+
+### テストを追加する
+`record/tests/test_<対象>.gd` を作り、`Node` を継承して `func run_tests(t) -> void:` を実装する。冒頭に `const TestAssert := preload("res://tests/Assert.gd")` を置き、`t.ok()` / `t.eq()` で確認して**末尾で `t.done()`** を呼ぶ。Autoload や物理フレームを使うテストは `await get_tree().physics_frame` でよい。`./run_tests.sh` で実行する。
 
 ### デバッグツールを追加する
 すべて `OS.has_feature("editor")` でガードし、製品ビルドに出ないようにする。既存クラスにデバッグ用のメソッドやフラグを生やさず、既存の公開 API とシグナルだけで実現する。

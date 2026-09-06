@@ -78,6 +78,9 @@ func _build_items() -> void:
 
 	_add_section("状態")
 	_add_info("GameState", func() -> String: return _state_name())
+	_add_info("現在のステージ", _current_stage_text)
+	_add_info("保存済みゴースト", func() -> String:
+		return "%d / %d" % [LoopManager.ghost_count, LoopManager.max_ghosts])
 
 # ── 登録 API ──────────────────────────────────────────────────────────────────
 
@@ -176,6 +179,15 @@ func _scan_levels() -> Array[int]:
 func _set_max_ghosts(value: int) -> void:
 	LoopManager.max_ghosts = value
 	GameManager.change_state(GameManager.current_state)
+
+## 読み込まれているステージ名。Main の下にぶら下がっている Level を探す。
+func _current_stage_text() -> String:
+	var parent: Node = get_parent()
+	if parent != null:
+		for child in parent.get_children():
+			if child is Level:
+				return child.name
+	return "(なし)"
 
 ## ステージを切り替える。実ゲームのステージ選択と同じ経路（StageSelect の
 ## stage_selected シグナル）を通すため、Main にデバッグ用の入口を足さずに済む。
