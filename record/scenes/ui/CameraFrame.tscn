@@ -145,7 +145,7 @@ offset_bottom = 124.0
 mouse_filter = 2
 script = ExtResource("1_blink")
 min_alpha = 0.2
-max_alpha = 0.8
+max_alpha = 0.7
 period = 2.5
 
 [node name="Dot" type="Panel" parent="REC" unique_id=1796033074]
@@ -193,21 +193,6 @@ layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
 script = ExtResource("3_batt")
-
-[node name="Count" type="Label" parent="RecInfo/Battery" unique_id=645266351]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.46423507, 0.46423507, 0.46423507, 0)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 55
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="Controls" type="Label" parent="." unique_id=2082466647]
 layout_mode = 1

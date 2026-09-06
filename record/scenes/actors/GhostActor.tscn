@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://cfubdbx1leudk"]
 
 [ext_resource type="Script" uid="uid://bheag1uosbtcv" path="res://src/scripts/actors/GhostController.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://duaenyy8uxrts" path="res://icon.svg" id="2_7vjid"]
-[ext_resource type="Resource" uid="uid://cmovestats0001" path="res://src/data/player_movement.tres" id="3_stats"]
+[ext_resource type="PackedScene" path="res://scenes/actors/SlimeVisual.tscn" id="2_slime"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_id11m"]
 size = Vector2(127, 126)
@@ -14,7 +13,6 @@ size = Vector2(28.55, 4)
 collision_layer = 4
 platform_on_leave = 0
 script = ExtResource("1")
-movement_stats = ExtResource("3_stats")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1176126276]
@@ -27,6 +25,4 @@ scale = Vector2(3.7, 0.8)
 shape = SubResource("2")
 target_position = Vector2(0, 4)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=200905213]
-modulate = Color(1, 0.3, 0.3, 0.6)
-texture = ExtResource("2_7vjid")
+[node name="SlimeVisual" parent="." instance=ExtResource("2_slime")]

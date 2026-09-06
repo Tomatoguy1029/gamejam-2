@@ -1,14 +1,9 @@
 [gd_scene format=3 uid="uid://d07pe46mmym2i"]
 
 [ext_resource type="Script" uid="uid://kmawfhfsfvoo" path="res://src/scripts/gimmicks/Tutorial.gd" id="1_tut"]
-[ext_resource type="Texture2D" uid="uid://564qxo3huvui" path="res://src/assets/brackeys_platformer_assets/sprites/world_tileset.png" id="2_wfif7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
 size = Vector2(164, 160)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_frqkw"]
-atlas = ExtResource("2_wfif7")
-region = Rect2(128.48378, 49.095303, 15.465591, 15.842991)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
 content_margin_left = 24.0
@@ -29,10 +24,6 @@ script = ExtResource("1_tut")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=535110064]
 position = Vector2(-1, 0)
 shape = SubResource("RectangleShape2D_trigger")
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1117459915]
-scale = Vector2(4.5, 4.5)
-texture = SubResource("AtlasTexture_frqkw")
 
 [node name="Bubble" type="PanelContainer" parent="." unique_id=1498303769]
 offset_left = -152.0

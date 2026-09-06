@@ -29,8 +29,6 @@ func _ready() -> void:
 	GameManager.ghost_discarded.connect(_refresh_ghost_icons)
 	GameManager.room_retried.connect(_refresh_ghost_icons)
 	GameManager.return_to_title_requested.connect(_refresh_ghost_icons)
-	# 巻き戻し演出中はリトライメニューを隠す（演出後すぐ IDLE で消えるが念のため）
-	GameManager.rewind_started.connect(func() -> void: _play_ended_panel.visible = false)
 
 	_update_panels(GameManager.GameState.MAIN_MENU)
 

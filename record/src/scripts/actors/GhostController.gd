@@ -8,9 +8,9 @@ var _ghost_data: GhostData = null
 func initialize(data: GhostData) -> void:
 	_ghost_data = data
 
-	# 半透明カラーを Sprite2D に適用
-	var sprite := get_node_or_null("Sprite2D")
-	if sprite is Sprite2D:
+	# 半透明カラーを SlimeVisual に適用
+	var sprite := get_node_or_null("SlimeVisual")
+	if sprite is CanvasItem:
 		var c := data.color
 		sprite.modulate = Color(c.r, c.g, c.b, 0.6)
 

@@ -16,6 +16,9 @@ func _ready() -> void:
 	var stage_select := $StageSelect
 	stage_select.stage_selected.connect(_on_stage_selected)
 
+	# Debug: make every stage available from the stage picker at launch.
+	GameManager.unlock_all_stages()
+
 	# タイトル画面から開始
 	GameManager.change_state(GameManager.GameState.MAIN_MENU)
 

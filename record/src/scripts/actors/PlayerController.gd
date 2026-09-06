@@ -4,17 +4,8 @@ extends "res://src/scripts/actors/ActorBase.gd"
 
 var _loop_tick: int = 0
 
-## 逆再生（巻き戻し演出）用の軌跡。数フレームごとに座標を記録する。
-const TRAIL_INTERVAL := 4      # 何物理フレームごとに座標を記録するか
-const REWIND_DURATION := 3.0   # 逆再生アニメの総尺（秒・固定）
-var _trail: PackedVector2Array = []
-
 func _ready() -> void:
-	super._ready()  # movement_stats の適用（ActorBase._ready）
-	GameManager.loop_started.connect(func(_idx):
-		_loop_tick = 0
-		_trail.clear()
-	)
+	GameManager.loop_started.connect(func(_idx): _loop_tick = 0)
 
 func _physics_process(delta: float) -> void:
 	# 入力ロック中は操作・録画・各キーを受け付けない
@@ -24,8 +15,6 @@ func _physics_process(delta: float) -> void:
 
 	if GameManager.current_state == GameManager.GameState.PLAYING:
 		RecordingManager.record_frame(_sample_input_frame())
-		if _loop_tick % TRAIL_INTERVAL == 0:
-			_trail.append(global_position)
 		_loop_tick += 1
 
 		if Input.is_action_just_pressed("retry"):
@@ -48,18 +37,6 @@ func _get_input() -> Dictionary:
 		move_up = Input.is_action_pressed("move_up"),
 		move_down = Input.is_action_pressed("move_down"),
 	}
-
-## 記録した軌跡を逆順に辿る巻き戻しアニメ。総尺は REWIND_DURATION に固定し、
-## 1区間の時間 = 尺 / (点数 - 1) として点数に依らず尺に収める。完了まで await 可能。
-func rewind() -> void:
-	if _trail.size() < 2:
-		return
-	var count: int = _trail.size()
-	var step: float = REWIND_DURATION / float(count - 1)
-	var tw := create_tween()
-	for i in range(count - 2, -1, -1):
-		tw.tween_property(self, "global_position", _trail[i], step)
-	await tw.finished
 
 func _sample_input_frame() -> InputFrame:
 	return InputFrame.create(

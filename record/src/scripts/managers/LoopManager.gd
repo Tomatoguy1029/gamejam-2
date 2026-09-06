@@ -4,6 +4,8 @@ extends Node
 @export var max_ghosts: int = 3
 ## アクター幅 + マージン（px）
 @export var spawn_offset_x: float = 64.0
+## Time to slide a formed slime from the shared bulb to its starting slot.
+@export var spawn_move_sec: float = 0.25
 @export var base_spawn_position: Vector2 = Vector2(200.0, 1000.0)
 @export var time_limit_sec: float = 30.0
 
@@ -37,11 +39,16 @@ var _clock_running: bool = false
 var _ghost_instances: Array[Node2D] = []
 var _player_instance: Node2D = null
 var _spawn_parent: Node = null
+var is_spawning: bool = false
+var _spawn_effect: Node2D
+var _spawn_queue: Array[Node2D] = []
+var _spawn_index: int = 0
+var _spawn_move_elapsed: float = 0.0
 
 # ── ゴーストカラー ────────────────────────────────────────────────────────────
 const GHOST_COLORS: Array[Color] = [
 	Color(1.0, 0.2, 0.2),    # 赤
-	#Color(1.0, 0.6, 0.0),    # オレンジ
+	Color(1.0, 0.6, 0.0),    # オレンジ
 	Color(1.0, 1.0, 0.0),    # 黄
 	Color(0.2, 1.0, 0.2),    # 緑
 	Color(0.2, 0.5, 1.0),    # 青
@@ -60,6 +67,9 @@ func _ready() -> void:
 	GameManager.state_changed.connect(_on_state_changed)
 
 func _physics_process(_delta: float) -> void:
+	if is_spawning:
+		_update_spawn(_delta)
+		return
 	if not _clock_running:
 		return
 	loop_tick += 1
@@ -90,21 +100,7 @@ func save_recording(data: GhostData) -> void:
 		GameManager.trigger_over_limit()  # 空き枠なし＝保存不可
 		return
 	add_ghost(data)
-	# 初回保存のみ：短い Noise の代わりに長い巻き戻し演出（軌跡の逆再生）を再生し、
-	# 終わってから IDLE（再スポーン）へ。
-	if not GameManager.first_rewind_played:
-		GameManager.first_rewind_played = true
-		await _play_first_rewind()
-		GameManager.change_state(GameManager.GameState.IDLE)
-		return
-	GameManager.save_ghost()  # 通常: 短い noise 演出 + IDLE
-
-## 初回保存時の巻き戻し演出。長い Noise を出しつつ、プレイヤーの軌跡を逆再生する。
-## 再生が終わってから保存→IDLE（再スポーン）へ進む。
-func _play_first_rewind() -> void:
-	GameManager.rewind_started.emit()  # RetryEffect が長い Noise を再生（入力ロック付き）
-	if is_instance_valid(_player_instance) and _player_instance.has_method("rewind"):
-		await _player_instance.rewind()
+	GameManager.save_ghost()  # noise 演出 + IDLE
 
 ## ステージ切り替え時にゴーストとアクターを全消去
 func ClearAll() -> void:
@@ -182,7 +178,57 @@ func _spawn_all() -> void:
 	_spawn_parent.add_child(_player_instance)
 	_player_instance.global_position = get_spawn_position(ghosts.size())
 
+	_spawn_queue.assign(_ghost_instances)
+	_spawn_queue.append(_player_instance)
+	for actor in _spawn_queue:
+		actor.hide()
+		actor.process_mode = Node.PROCESS_MODE_DISABLED
+		actor.get_node("CollisionShape2D").set_deferred("disabled", true)
+	_spawn_effect = load("res://scenes/actors/SlimeVisual.tscn").instantiate()
+	_spawn_effect.name = "SpawnBulb"
+	_spawn_parent.add_child(_spawn_effect)
+	_spawn_effect.global_position = base_spawn_position
+	_spawn_index = 0
+	is_spawning = true
+	_begin_spawn()
+
+func _begin_spawn() -> void:
+	_spawn_move_elapsed = 0.0
+	_spawn_effect.play_spawn()
+	# Tint the emerging slime, while keeping the stationary bulb neutral.
+	_spawn_effect.get_node("Character").modulate = _spawn_queue[_spawn_index].get_node("SlimeVisual").modulate
+
+func _update_spawn(delta: float) -> void:
+	if not is_instance_valid(_spawn_effect) or not is_instance_valid(_spawn_parent):
+		_despawn_all()
+		return
+	if _spawn_effect.is_spawn_playing():
+		return
+	_spawn_move_elapsed += delta
+	var actor := _spawn_queue[_spawn_index]
+	var progress := clampf(_spawn_move_elapsed / maxf(spawn_move_sec, 0.001), 0.0, 1.0)
+	var character: Sprite2D = _spawn_effect.get_node("Character")
+	character.global_position = base_spawn_position.lerp(actor.global_position, progress) + Vector2(-64, -64)
+	if progress < 1.0:
+		return
+	actor.show()
+	_spawn_effect.keep_bulb()
+	_spawn_index += 1
+	if _spawn_index < _spawn_queue.size():
+		_begin_spawn()
+	else:
+		for spawned in _spawn_queue:
+			spawned.process_mode = Node.PROCESS_MODE_INHERIT
+			spawned.get_node("CollisionShape2D").set_deferred("disabled", false)
+		_spawn_queue.clear()
+		is_spawning = false
+
 func _despawn_all() -> void:
+	is_spawning = false
+	_spawn_queue.clear()
+	if is_instance_valid(_spawn_effect):
+		_spawn_effect.queue_free()
+	_spawn_effect = null
 	for inst in _ghost_instances:
 		if is_instance_valid(inst):
 			inst.queue_free()
