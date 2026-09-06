@@ -9,6 +9,9 @@ extends Control
 @export var seg_skew_ratio: float = 0.45   # セグメントの傾き（高さに対する比）
 @export var seg_gap: float = 6.0           # セグメント間の隙間
 
+## メーターに重ねて残り回数を表示するラベル（任意）
+@onready var _count_label: Label = $Count
+
 func _ready() -> void:
 	GameManager.ghost_saved.connect(queue_redraw)
 	GameManager.ghost_discarded.connect(queue_redraw)
@@ -18,6 +21,10 @@ func _ready() -> void:
 func _draw() -> void:
 	var maxn: int = maxi(1, LoopManager.max_ghosts)
 	var remaining: int = clampi(LoopManager.max_ghosts - LoopManager.ghost_count, 0, maxn)
+
+	# メーターに重ねて残り回数を表示（0 のときは数字を出さない）
+	if _count_label != null:
+		_count_label.text = str(remaining) if remaining > 0 else ""
 
 	# 残量ゼロは赤枠＋斜線（バッテリー無効アイコン）、それ以外は白枠
 	var empty: bool = remaining <= 0

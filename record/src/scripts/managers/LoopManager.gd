@@ -100,7 +100,21 @@ func save_recording(data: GhostData) -> void:
 		GameManager.trigger_over_limit()  # 空き枠なし＝保存不可
 		return
 	add_ghost(data)
-	GameManager.save_ghost()  # noise 演出 + IDLE
+	# 初回保存のみ：短い Noise の代わりに長い巻き戻し演出（軌跡の逆再生）を再生し、
+	# 終わってから IDLE（再スポーン）へ。
+	if not GameManager.first_rewind_played:
+		GameManager.first_rewind_played = true
+		await _play_first_rewind()
+		GameManager.change_state(GameManager.GameState.IDLE)
+		return
+	GameManager.save_ghost()  # 通常: 短い noise 演出 + IDLE
+
+## 初回保存時の巻き戻し演出。長い Noise を出しつつ、プレイヤーの軌跡を逆再生する。
+## 再生が終わってから保存→IDLE（再スポーン）へ進む。
+func _play_first_rewind() -> void:
+	GameManager.rewind_started.emit()  # RetryEffect が長い Noise を再生（入力ロック付き）
+	if is_instance_valid(_player_instance) and _player_instance.has_method("rewind"):
+		await _player_instance.rewind()
 
 ## ステージ切り替え時にゴーストとアクターを全消去
 func ClearAll() -> void:
