@@ -124,6 +124,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 
 ### デバッグツールを追加する
 すべて `OS.has_feature("editor")` でガードし、製品ビルドに出ないようにする。既存クラスにデバッグ用のメソッドやフラグを生やさず、既存の公開 API とシグナルだけで実現する。
+ショートカットが要るなら `DebugMenu.gd` に `@export var <名前>_shortcut: Shortcut` を足し、`_build_shortcuts()` に `_bind()` を1行足す（`project.godot` の入力マップは使わない）。
 **完了後に [docs/debug-tools.md](docs/debug-tools.md) へ使い方（起動方法・できること・注意点）を追記すること。**
 
 ---

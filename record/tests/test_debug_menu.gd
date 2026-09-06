@@ -22,18 +22,39 @@ func run_tests(t: TestAssert) -> void:
 	t.ok("もう一度 toggle() で閉じる", not menu.is_open)
 	t.ok("閉じたら入力ロックを解除する", not GameManager.input_locked)
 
-	# ── F3 キーで開閉できる ───────────────────────────────
-	await _press_f3()
-	t.ok("F3 で開く", menu.is_open)
-	await _press_f3()
-	t.ok("F3 で閉じる", not menu.is_open)
+	# ── 既定のショートカット（Esc）で開閉できる ────────────
+	t.ok("既定のショートカットが割り当てられている",
+		menu.toggle_menu_shortcut != null and menu.toggle_menu_shortcut.has_valid_event())
+	await _press_key(KEY_ESCAPE)
+	t.ok("Esc で開く", menu.is_open)
+	await _press_key(KEY_ESCAPE)
+	t.ok("Esc で閉じる", not menu.is_open)
 
 	# ── R-2: 他が入力をロックしている間は開かない ──────────
 	GameManager.input_locked = true
-	await _press_f3()
-	t.ok("演出中（入力ロック中）は F3 で開かない", not menu.is_open)
+	await _press_key(KEY_ESCAPE)
+	t.ok("演出中（入力ロック中）は開かない", not menu.is_open)
 	t.ok("ロックを横取りしない", GameManager.input_locked)
 	GameManager.input_locked = false
+
+	# ── ショートカットは差し替えられる ─────────────────────
+	menu.toggle_menu_shortcut = _shortcut(KEY_F9)
+	menu.refresh_shortcuts()
+	await _press_key(KEY_F9)
+	t.ok("割り当てを変えたキーで開く", menu.is_open)
+	await _press_key(KEY_F9)
+	t.ok("同じキーで閉じる", not menu.is_open)
+	await _press_key(KEY_ESCAPE)
+	t.ok("差し替え前のキーは効かなくなる", not menu.is_open)
+
+	# ── 未割り当てならキーでは開かない ─────────────────────
+	menu.toggle_menu_shortcut = null
+	menu.refresh_shortcuts()
+	await _press_key(KEY_ESCAPE)
+	await _press_key(KEY_F9)
+	t.ok("未割り当てならキーでは開かない", not menu.is_open)
+	t.ok("それでも toggle() では開ける", _open_via_call(menu))
+	menu.set_open(false)
 
 	# ── 登録 API ─────────────────────────────────────────
 	var items: VBoxContainer = menu.get_node("Panel/Scroll/Items")
@@ -79,13 +100,26 @@ func run_tests(t: TestAssert) -> void:
 	await get_tree().process_frame
 	t.done()
 
-func _press_f3() -> void:
+func _press_key(key: Key) -> void:
 	var ev := InputEventKey.new()
-	ev.keycode = KEY_F3
+	ev.keycode = key
 	ev.pressed = true
 	Input.parse_input_event(ev)
 	await get_tree().process_frame
 	await get_tree().process_frame
+
+## 指定キー1つだけの Shortcut を作る。
+func _shortcut(key: Key) -> Shortcut:
+	var ev := InputEventKey.new()
+	ev.keycode = key
+	ev.pressed = true
+	var sc := Shortcut.new()
+	sc.events = [ev]
+	return sc
+
+func _open_via_call(menu: CanvasLayer) -> bool:
+	menu.toggle()
+	return menu.is_open
 
 func _find_button(root: Node, text: String) -> Button:
 	for n in _walk(root):

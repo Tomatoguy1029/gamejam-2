@@ -2,9 +2,18 @@
 
 [ext_resource type="Script" path="res://src/scripts/debug/DebugMenu.gd" id="1"]
 
+[sub_resource type="InputEventKey" id="key_toggle"]
+device = -1
+pressed = true
+keycode = 4194305
+
+[sub_resource type="Shortcut" id="shortcut_toggle"]
+events = [SubResource("key_toggle")]
+
 [node name="DebugMenu" type="CanvasLayer"]
 layer = 200
 script = ExtResource("1")
+toggle_menu_shortcut = SubResource("shortcut_toggle")
 
 [node name="Panel" type="PanelContainer" parent="."]
 visible = false

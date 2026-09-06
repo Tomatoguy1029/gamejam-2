@@ -11,9 +11,13 @@
 ## フラグを生やさないこと。
 extends CanvasLayer
 
-## メニューの開閉キー。project.godot の入力マップにデバッグ用アクションを
-## 増やしたくないので、生のキーコードを見る。
-const TOGGLE_KEY: Key = KEY_F3
+## メニューの開閉ショートカット。インスペクタから割り当てを変えられる。
+## 既定は Esc。ファンクションキー（F3 など）は OS 側のショートカットに
+## 取られることがあるため既定にしない。
+##
+## project.godot の入力マップは使わない。製品側の設定にデバッグ用アクションの
+## 痕跡を残さないため。
+@export var toggle_menu_shortcut: Shortcut
 
 @onready var _panel: Control = $Panel
 @onready var _items: VBoxContainer = $Panel/Scroll/Items
@@ -23,6 +27,9 @@ var _infos: Array = []
 
 ## ステージ一覧のボタン位置 → 実際のステージ番号
 var _stage_indices: Array[int] = []
+
+## [Shortcut, 実行する処理] の組。_build_shortcuts() に1行足せば増える。
+var _shortcuts: Array = []
 
 var is_open: bool:
 	get: return _panel.visible
@@ -38,21 +45,24 @@ func _ready() -> void:
 		return
 	_panel.visible = false
 	_build_items()
+	refresh_shortcuts()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	var key := event as InputEventKey
-	if key == null or not key.pressed or key.echo:
+	if not event.is_pressed() or event.is_echo():
 		return
-	if key.keycode != TOGGLE_KEY:
+	for pair in _shortcuts:
+		var shortcut: Shortcut = pair[0]
+		if not shortcut.matches_event(event):
+			continue
+		(pair[1] as Callable).call()
+		get_viewport().set_input_as_handled()
 		return
-	# 巻き戻し演出などが入力をロックしている間は開かない。
-	# 開いてしまうと、閉じたときに演出中のロックまで解除してしまう。
-	if not is_open and GameManager.input_locked:
-		return
-	toggle()
-	get_viewport().set_input_as_handled()
 
 func toggle() -> void:
+	# 巻き戻し演出などが入力をロックしている間は開かない。
+	# 開いてしまうと、閉じたときに演出側のロックまで解除してしまう。
+	if not is_open and GameManager.input_locked:
+		return
 	set_open(not is_open)
 
 func set_open(open: bool) -> void:
@@ -61,6 +71,22 @@ func set_open(open: bool) -> void:
 	GameManager.input_locked = open
 	if open:
 		_refresh_infos()
+
+# ── ショートカット ────────────────────────────────────────────────────────────
+
+## 割り当てを変えたあとに呼ぶと、その場で反映される。
+func refresh_shortcuts() -> void:
+	_shortcuts.clear()
+	_build_shortcuts()
+
+## ここに1行足すだけでショートカットが増える。
+func _build_shortcuts() -> void:
+	_bind(toggle_menu_shortcut, toggle)
+
+## Shortcut と処理を結びつける。未割り当て（null または空）なら何もしない。
+func _bind(shortcut: Shortcut, action: Callable) -> void:
+	if shortcut != null and shortcut.has_valid_event():
+		_shortcuts.append([shortcut, action])
 
 # ── 項目の定義 ────────────────────────────────────────────────────────────────
 ## ここに1行足すだけで項目が増える。
