@@ -12,19 +12,18 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 
 ---
 
-## 2. 最初に読むもの
+## 2. 作業前に読むもの
 
-| ドキュメント | 内容 | 読むべきとき |
-|---|---|---|
-| [README.md](README.md) | 概要・実行方法・操作・実装の工夫 | 常に |
-| [docs/requirement.md](docs/requirement.md) | 要件定義。何を満たすべきか。当初設計からの差分表つき | 仕様を変える・機能を足すとき |
-| [docs/architecture.md](docs/architecture.md) | 内部構造。マネージャ層・状態機械・録画再生・衝突レイヤー | コードを触る前に必ず |
-| [docs/SPEC.md](docs/SPEC.md) | 画面・数値まで含む網羅的な詳細仕様 | 具体的な挙動や定数を確認したいとき |
-| [record/src/md/gimmick-guide.md](record/src/md/gimmick-guide.md) | ギミック追加の手順書 | ギミックを追加するとき |
-| [record/src/md/gimmick-list.md](record/src/md/gimmick-list.md) | 既存ギミック一覧 | 同上 |
-| [docs/testing.md](docs/testing.md) | テストの置き場所・書き方・粒度 | テストを書く・回すとき |
-| [docs/test-list.md](docs/test-list.md) | 今あるテストの一覧と逆引き | どのテストが何を守っているか知りたいとき |
-| [docs/debug-tools.md](docs/debug-tools.md) | デバッグツールの一覧と使い方 | デバッグ機能を使う・作るとき |
+ドキュメントの一覧と各文書の内容は [README.md](README.md) にある。ここでは**どの作業のときに何を読むか**だけを示す。
+
+| これからすること | 先に読むもの |
+|---|---|
+| **コードを触る（内容を問わず）** | [docs/architecture.md](docs/architecture.md) の「設計方針」と「既知の制約」 |
+| 仕様・ルールを変える、機能を足す | [docs/requirement.md](docs/requirement.md) |
+| 定数や具体的な挙動を確認する | [docs/SPEC.md](docs/SPEC.md)（数値の一次情報源） |
+| ギミックを追加・変更する | [gimmick-guide.md](record/src/md/gimmick-guide.md)（手順）と [gimmick-list.md](record/src/md/gimmick-list.md)（既存一覧） |
+| テストを書く | [docs/testing.md](docs/testing.md)。既にあるものの確認は [docs/test-list.md](docs/test-list.md) |
+| デバッグ機能を使う・作る | [docs/debug-tools.md](docs/debug-tools.md) |
 
 **コードを書き始める前に `docs/architecture.md` の「設計方針」と「既知の制約」に目を通すこと。** この設計は決定論的な録画再生を成立させるために意図的な制約を置いており、それを知らずに書き換えると再生が壊れる。
 
@@ -140,6 +139,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 | ギミックを追加・変更した | `record/src/md/gimmick-list.md`（手順が変わったなら `gimmick-guide.md` も） |
 | デバッグツールを追加・変更した | `docs/debug-tools.md`（使い方を短く追記する） |
 | テストを追加・削除した | `docs/test-list.md` の一覧を更新する |
+| ドキュメントを新設した | `README.md` の一覧に追記する。その文書を読むべき**作業のきっかけ**があるなら、本ファイル §2 の表にも足す |
 | 仕様・ルールを変えた | `docs/requirement.md`、`docs/SPEC.md` |
 | 構造・責務・データフローを変えた | `docs/architecture.md` |
 | 操作・実行方法・ディレクトリを変えた | `README.md` |
