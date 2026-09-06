@@ -1,0 +1,204 @@
+[gd_scene format=3 uid="uid://cq0frmrec1234"]
+
+[ext_resource type="Script" uid="uid://c8buo0dxueso1" path="res://src/scripts/ui/rec_blink.gd" id="1_blink"]
+[ext_resource type="Script" uid="uid://5dgj15n8jqyq" path="res://src/scripts/ui/camera_frame_ui.gd" id="2_root"]
+[ext_resource type="Script" uid="uid://cmsnxjicy4ih" path="res://src/scripts/ui/recording_battery.gd" id="3_batt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot"]
+bg_color = Color(0.9, 0.12, 0.1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="CameraFrame" type="Control" unique_id=1420805119]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_root")
+
+[node name="TL_H" type="ColorRect" parent="." unique_id=489095272]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 28.0
+offset_right = 88.0
+offset_bottom = 44.0
+
+[node name="TL_V" type="ColorRect" parent="." unique_id=366485175]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 28.0
+offset_right = 44.0
+offset_bottom = 88.0
+
+[node name="TR_H" type="ColorRect" parent="." unique_id=719761082]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -88.0
+offset_top = 28.0
+offset_right = -28.0
+offset_bottom = 44.0
+grow_horizontal = 0
+
+[node name="TR_V" type="ColorRect" parent="." unique_id=1842130106]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -44.0
+offset_top = 28.0
+offset_right = -28.0
+offset_bottom = 88.0
+grow_horizontal = 0
+
+[node name="BL_H" type="ColorRect" parent="." unique_id=1857869898]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -44.0
+offset_right = 88.0
+offset_bottom = -28.0
+grow_vertical = 0
+
+[node name="BL_V" type="ColorRect" parent="." unique_id=1628651686]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -88.0
+offset_right = 44.0
+offset_bottom = -28.0
+grow_vertical = 0
+
+[node name="BR_H" type="ColorRect" parent="." unique_id=1200718389]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -44.0
+offset_right = -28.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="BR_V" type="ColorRect" parent="." unique_id=1497401992]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -44.0
+offset_top = -88.0
+offset_right = -28.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="CH_H" type="ColorRect" parent="." unique_id=663394629]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -2.0
+offset_right = 18.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CH_V" type="ColorRect" parent="." unique_id=616301900]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -18.0
+offset_right = 2.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="REC" type="Control" parent="." unique_id=274222397]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 73.0
+offset_top = 62.0
+offset_right = 297.0
+offset_bottom = 124.0
+mouse_filter = 2
+script = ExtResource("1_blink")
+min_alpha = 0.2
+max_alpha = 0.7
+period = 2.5
+
+[node name="Dot" type="Panel" parent="REC" unique_id=1796033074]
+layout_mode = 1
+offset_top = 8.0
+offset_right = 40.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dot")
+
+[node name="Label" type="Label" parent="REC" unique_id=249096015]
+layout_mode = 1
+offset_left = 52.0
+offset_top = -6.0
+offset_right = 220.0
+offset_bottom = 61.0
+theme_override_colors/font_color = Color(0.9, 0.12, 0.1, 1)
+theme_override_font_sizes/font_size = 48
+text = "REC"
+vertical_alignment = 1
+
+[node name="RecInfo" type="HBoxContainer" parent="." unique_id=116861594]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -500.0
+offset_top = 62.0
+offset_right = -150.0
+offset_bottom = 130.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 24
+alignment = 2
+
+[node name="TimerLabel" type="Label" parent="RecInfo" unique_id=481419779]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "30.0"
+vertical_alignment = 1
+
+[node name="Battery" type="Control" parent="RecInfo" unique_id=1852967394]
+custom_minimum_size = Vector2(120, 56)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("3_batt")
+
+[node name="Controls" type="Label" parent="." unique_id=2082466647]
+layout_mode = 1
+offset_left = 320.0
+offset_top = 62.0
+offset_right = 1500.0
+offset_bottom = 124.0
+theme_override_font_sizes/font_size = 48
+vertical_alignment = 1

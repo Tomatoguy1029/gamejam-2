@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://c0fuhccktyx30"]
+
+[ext_resource type="Script" uid="uid://bv0aymqq4qtm" path="res://src/scripts/gimmicks/PressurePlate.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(64, 8)
+
+[node name="PressurePlate" type="Area2D" unique_id=1863520365]
+collision_layer = 0
+collision_mask = 62
+script = ExtResource("1")
+press_offset = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1433370076]
+shape = SubResource("1")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=213447389]
+offset_left = -32.0
+offset_top = -4.0
+offset_right = 32.0
+offset_bottom = 4.0
+color = Color(0.5, 0.4, 0.2, 1)
