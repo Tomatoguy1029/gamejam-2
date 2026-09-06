@@ -19,6 +19,23 @@ func _enter_tree() -> void:
 	_button.tooltip_text = "編集中のステージを直接起動する（F5 は通常どおりタイトルから）"
 	_button.pressed.connect(_on_pressed)
 	add_control_to_container(CONTAINER_TOOLBAR, _button)
+	_move_next_to_main_screen_buttons()
+
+## CONTAINER_TOOLBAR は EditorTitleBar の末尾に積むため、既定ではレンダラー選択の
+## さらに右端に出て見つけにくい。「2D / 3D / スクリプト …」の並びの直後へ移し、
+## 再生ボタンより左に置く。
+##
+## EditorMainScreenButtons はエディタ内部のノードなので、将来 Godot 側の構造が
+## 変わって見つからなくなったら既定位置のままにして、壊さないようにする。
+func _move_next_to_main_screen_buttons() -> void:
+	var bar: Node = _button.get_parent()
+	if bar == null:
+		return
+	var anchor: Node = bar.get_node_or_null("EditorMainScreenButtons")
+	if anchor == null:
+		push_warning("Debug Launcher: ツールバーの並び替え先が見つからないので既定位置に置く")
+		return
+	bar.move_child(_button, anchor.get_index() + 1)
 
 func _exit_tree() -> void:
 	if _button != null:
