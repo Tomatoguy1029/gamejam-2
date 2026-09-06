@@ -22,7 +22,8 @@ Godot プロジェクトの実体は **`record/`** 以下。リポジトリル�
 | [docs/SPEC.md](docs/SPEC.md) | 画面・数値まで含む網羅的な詳細仕様 | 具体的な挙動や定数を確認したいとき |
 | [record/src/md/gimmick-guide.md](record/src/md/gimmick-guide.md) | ギミック追加の手順書 | ギミックを追加するとき |
 | [record/src/md/gimmick-list.md](record/src/md/gimmick-list.md) | 既存ギミック一覧 | 同上 |
-| [docs/testing.md](docs/testing.md) | テストの置き場所・書き方・粒度・一覧 | テストを書く・回すとき |
+| [docs/testing.md](docs/testing.md) | テストの置き場所・書き方・粒度 | テストを書く・回すとき |
+| [docs/test-list.md](docs/test-list.md) | 今あるテストの一覧と逆引き | どのテストが何を守っているか知りたいとき |
 | [docs/debug-tools.md](docs/debug-tools.md) | デバッグツールの一覧と使い方 | デバッグ機能を使う・作るとき |
 
 **コードを書き始める前に `docs/architecture.md` の「設計方針」と「既知の制約」に目を通すこと。** この設計は決定論的な録画再生を成立させるために意図的な制約を置いており、それを知らずに書き換えると再生が壊れる。
@@ -138,7 +139,7 @@ Godot 4.6 が必要（動作確認は 4.6.3 stable）。macOS では `/Applicati
 |---|---|
 | ギミックを追加・変更した | `record/src/md/gimmick-list.md`（手順が変わったなら `gimmick-guide.md` も） |
 | デバッグツールを追加・変更した | `docs/debug-tools.md`（使い方を短く追記する） |
-| テストを追加・削除した | `docs/testing.md` の「今あるテスト」一覧を更新する |
+| テストを追加・削除した | `docs/test-list.md` の一覧を更新する |
 | 仕様・ルールを変えた | `docs/requirement.md`、`docs/SPEC.md` |
 | 構造・責務・データフローを変えた | `docs/architecture.md` |
 | 操作・実行方法・ディレクトリを変えた | `README.md` |
