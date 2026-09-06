@@ -36,5 +36,10 @@ func report() -> void:
 	for f in _failures:
 		print("  FAILED: " + f)
 
+## これまでに記録したアサーション数。TestRunner が「テストが1つも
+## アサーションを残さずに終わった＝途中で異常終了した」を検出するのに使う。
+func count() -> int:
+	return _pass + _fail
+
 func exit_code() -> int:
 	return 0 if _fail == 0 else 1

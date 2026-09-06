@@ -14,6 +14,9 @@ func run_tests(t: TestAssert) -> void:
 	t.eq("予約なしならタイトル（F5 の挙動を変えない）",
 		GameManager.current_state, GameManager.GameState.MAIN_MENU)
 	t.ok("レベルは読み込まれない", main._current_level == null)
+	var menu: Node = main.get_node_or_null("DebugMenu")
+	t.ok("Main にデバッグメニューがぶら下がっている", menu != null)
+	t.ok("デバッグメニューは閉じた状態で始まる", menu != null and not menu.is_open)
 	await _despawn(main)
 
 	# ── 予約あり ＝ そのステージへ直行 ──────────────────────

@@ -24,7 +24,13 @@ func _ready() -> void:
 		add_child(node)
 		t.begin(path.get_file())
 		if node.has_method("run_tests"):
+			var before: int = t.count()
 			await node.run_tests(t)
+			# テスト中にスクリプトエラーが起きると途中で打ち切られるが、
+			# それ自体は例外にならない。アサーションが1件も無い＝異常終了とみなす。
+			if t.count() == before:
+				t.ok("アサーションが1件以上あること", false,
+					"途中でスクリプトエラーが起きた可能性がある")
 		else:
 			t.ok("run_tests() が実装されていること", false, path)
 		node.queue_free()

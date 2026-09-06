@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/scripts/debug/DebugMenu.gd" id="1"]
+
+[node name="DebugMenu" type="CanvasLayer"]
+layer = 200
+script = ExtResource("1")
+
+[node name="Panel" type="PanelContainer" parent="."]
+visible = false
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 560.0
+offset_bottom = -40.0
+grow_vertical = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Items" type="VBoxContainer" parent="Panel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
