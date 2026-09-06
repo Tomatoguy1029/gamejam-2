@@ -104,7 +104,7 @@ record/
 ├── scenes/
 │   ├── Main.tscn                  # ルートシーン
 │   ├── actors/                    # PlayerActor.tscn / GhostActor.tscn
-│   ├── gimmicks/                  # PressurePlate, Door, Platform, Lamp, Ladder, Goal, Tutorial
+│   ├── gimmicks/                  # PressurePlate, Door, Platform, Lamp, Ladder, Goal, Tutorial, Pulley
 │   ├── levels/                    # Level001〜004.tscn
 │   ├── ui/                        # HUD.tscn, StageSelect.tscn, CameraFrame.tscn
 │   └── PostProcess/               # RetryEffect.tscn（演出ノードの集約）
@@ -375,6 +375,7 @@ for target in _targets:
 | `Ladder` | `Area2D` | 重ねて配置しても壊れないよう、body 側の `_ladder_count` をカウンタとして増減する |
 | `Goal` | `Area2D` | スクリプトなし。`Main` が `body_entered` を `end_play(true)` に接続する |
 | `Tutorial` | `Area2D` | 吹き出しを Tween 表示し、`GameManager.tutorial_hint` を発火する |
+| `Pulley` | `Node2D` ＋ `AnimatableBody2D` ×2 | カウンターウェイト式の滑車。各カゴ上面の `WeightArea`（`Area2D` / mask 62）で乗っているアクター数を数え、多いほうのカゴを下げる。**唯一、毎フレーム連続移動するギミック**なので、`ActorBase` と同じく `PLAYING` 中だけ動かす。滑車とロープは親の `_draw()` で描く |
 
 ---
 

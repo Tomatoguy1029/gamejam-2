@@ -9,3 +9,4 @@
 | `Platform.tscn` | `Platform.gd` | activate で出現 / deactivate で消える足場 |
 | `Ladder.tscn` | `Ladder.gd` | エリア内で W / S を押すと昇降できる梯子（重力を無視する。重ねて配置可） |
 | `Tutorial.tscn` | `Tutorial.gd` | プレイヤーが触れると吹き出しを出し、操作説明を追加する看板 |
+| `Pulley.tscn` | `Pulley.gd` | 2 つのカゴが逆方向に動く滑車。乗っている人数が多いほうが下がる |
