@@ -32,7 +32,7 @@ func _ready() -> void:
 		gravity = movement_stats.gravity
 		climb_speed = movement_stats.climb_speed
 		accel = movement_stats.accel
-		
+
 func _physics_process(delta: float) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
 		return
