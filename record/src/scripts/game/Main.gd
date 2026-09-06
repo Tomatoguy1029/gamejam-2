@@ -2,6 +2,9 @@
 ## Manager 群の接続・レベルロード・ゲームフロー全体を仲介する。
 extends Node2D
 
+## デバッグ起動の予約を読むためだけに使う。製品ビルドでは参照しない。
+const DebugLaunch := preload("res://src/scripts/debug/DebugLaunch.gd")
+
 var _current_level: Node2D = null
 var _current_level_index: int = 1
 
@@ -16,8 +19,37 @@ func _ready() -> void:
 	var stage_select := $StageSelect
 	stage_select.stage_selected.connect(_on_stage_selected)
 
+	# エディタからのデバッグ起動が予約されていれば、そこへ直行する
+	if _try_debug_launch():
+		return
+
 	# タイトル画面から開始
 	GameManager.change_state(GameManager.GameState.MAIN_MENU)
+
+## エディタのデバッグ実行ボタンで予約されたステージへ直行する。
+## 予約されていなければ false を返し、通常どおりタイトルから始める。
+##
+## 予約は DebugLaunch.consume() が1回で消費するので、この後の通常起動（F5）が
+## デバッグ起動に化けることはない。製品ビルドでは has_feature("editor") が
+## false になるため、この経路自体に入らない。
+func _try_debug_launch() -> bool:
+	if not OS.has_feature("editor"):
+		return false
+
+	var stage: int = DebugLaunch.consume()
+	if stage <= 0:
+		return false
+
+	_current_level_index = stage
+	LoopManager.ClearAll()
+	if not _load_level_by_index(stage):
+		push_warning("デバッグ起動: Stage %d が見つからないのでタイトルへ" % stage)
+		return false
+
+	# デバッグメニューから全ステージへ飛べるようにしておく
+	GameManager.unlock_all_stages()
+	GameManager.start_game()  # → IDLE
+	return true
 
 func _unhandled_input(_event: InputEvent) -> void:
 	if GameManager.input_locked:
