@@ -21,6 +21,9 @@ const TOGGLE_KEY: Key = KEY_F3
 ## _add_info で登録した [Label, getter] の組。開くたびに再評価する。
 var _infos: Array = []
 
+## ステージ一覧のボタン位置 → 実際のステージ番号
+var _stage_indices: Array[int] = []
+
 var is_open: bool:
 	get: return _panel.visible
 
@@ -62,6 +65,13 @@ func set_open(open: bool) -> void:
 # ── 項目の定義 ────────────────────────────────────────────────────────────────
 ## ここに1行足すだけで項目が増える。
 func _build_items() -> void:
+	_add_section("ステージ")
+	_stage_indices = _scan_levels()
+	var labels := PackedStringArray()
+	for index in _stage_indices:
+		labels.append("Stage %d" % index)
+	_add_list("移動", labels, _goto_stage)
+
 	_add_section("状態")
 	_add_info("GameState", func() -> String: return _state_name())
 
@@ -132,6 +142,39 @@ func _add_info(label: String, getter: Callable) -> void:
 	value.text = str(getter.call())
 	_infos.append([value, getter])
 	_items.add_child(_row(label, value))
+
+# ── 項目の中身 ────────────────────────────────────────────────────────────────
+
+## scenes/levels/ を走査してステージ番号を集める。StageSelect と同じ方式なので、
+## LevelNNN.tscn を置けばデバッグメニューにも自動で並ぶ。
+func _scan_levels() -> Array[int]:
+	var out: Array[int] = []
+	var dir := DirAccess.open("res://scenes/levels/")
+	if dir == null:
+		return out
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while file_name != "":
+		if file_name.begins_with("Level") and file_name.ends_with(".tscn"):
+			var num: String = file_name.trim_prefix("Level").trim_suffix(".tscn")
+			if num.is_valid_int():
+				out.append(num.to_int())
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	out.sort()
+	return out
+
+## ステージを切り替える。実ゲームのステージ選択と同じ経路（StageSelect の
+## stage_selected シグナル）を通すため、Main にデバッグ用の入口を足さずに済む。
+func _goto_stage(position: int) -> void:
+	if position < 0 or position >= _stage_indices.size():
+		return
+	var select: Node = get_parent().get_node_or_null("StageSelect")
+	if select == null or not select.has_signal("stage_selected"):
+		push_warning("デバッグメニュー: StageSelect が見つからないので移動できない")
+		return
+	set_open(false)  # 先に閉じて入力ロックを外してから移動する
+	select.stage_selected.emit(_stage_indices[position])
 
 # ── 内部 ──────────────────────────────────────────────────────────────────────
 
