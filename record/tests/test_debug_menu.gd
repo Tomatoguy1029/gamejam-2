@@ -40,43 +40,44 @@ func run_tests(t: TestAssert) -> void:
 	var before: int = items.get_child_count()
 
 	var flag := {"n": 0}
-	menu._add_action("押す", func() -> void: flag["n"] += 1)
+	var row: Control = menu._add_action("押す", func() -> void: flag["n"] += 1)
 	t.ok("_add_action が項目を増やす", items.get_child_count() > before)
-	_find_button(items, "押す").pressed.emit()
+	_find_button(row, "押す").pressed.emit()
 	t.eq("_add_action のボタンが呼ばれる", flag["n"], 1)
 
 	var num := {"v": 2}
-	menu._add_int("数値", func() -> int: return num["v"],
+	row = menu._add_int("数値", func() -> int: return num["v"],
 		func(v: int) -> void: num["v"] = v, 0, 3)
-	_find_button(items, "＋").pressed.emit()
+	_find_button(row, "＋").pressed.emit()
 	t.eq("_add_int の ＋ が setter を呼ぶ", num["v"], 3)
-	_find_button(items, "＋").pressed.emit()
+	_find_button(row, "＋").pressed.emit()
 	t.eq("_add_int は上限でクランプする", num["v"], 3)
-	_find_button(items, "−").pressed.emit()
+	_find_button(row, "−").pressed.emit()
 	t.eq("_add_int の − が setter を呼ぶ", num["v"], 2)
 
 	var onoff := {"v": false}
-	menu._add_bool("フラグ", func() -> bool: return onoff["v"],
+	row = menu._add_bool("フラグ", func() -> bool: return onoff["v"],
 		func(v: bool) -> void: onoff["v"] = v)
-	_find_check(items).button_pressed = true
+	_find_check(row).button_pressed = true
 	t.ok("_add_bool が setter を呼ぶ", onoff["v"])
 
 	var picked := {"i": -1}
-	menu._add_list("一覧", PackedStringArray(["A", "B", "C"]),
+	row = menu._add_list("一覧", PackedStringArray(["A", "B", "C"]),
 		func(i: int) -> void: picked["i"] = i)
-	_find_button(items, "C").pressed.emit()
+	_find_button(row, "C").pressed.emit()
 	t.eq("_add_list が選んだ位置を渡す", picked["i"], 2)
 
 	var info := {"v": "old"}
-	menu._add_info("表示", func() -> String: return info["v"])
+	row = menu._add_info("表示", func() -> String: return info["v"])
 	info["v"] = "new"
 	menu.set_open(true)
-	t.eq("_add_info は開くたびに再評価される", _find_label(items, "new") != null, true)
+	t.eq("_add_info は開くたびに再評価される", _find_label(row, "new") != null, true)
 	menu.set_open(false)
 
 	menu.queue_free()
 	GameManager.input_locked = false
 	await get_tree().process_frame
+	t.done()
 
 func _press_f3() -> void:
 	var ev := InputEventKey.new()

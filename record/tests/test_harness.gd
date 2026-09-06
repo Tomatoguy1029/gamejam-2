@@ -8,3 +8,4 @@ func run_tests(t: TestAssert) -> void:
 	t.eq("eq() が値を比較できる", 1 + 1, 2)
 	await get_tree().physics_frame
 	t.ok("await のあとも継続できる", true)
+	t.done()

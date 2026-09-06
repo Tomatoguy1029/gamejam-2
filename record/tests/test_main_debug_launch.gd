@@ -47,6 +47,7 @@ func run_tests(t: TestAssert) -> void:
 	await _despawn(main)
 
 	DebugLaunch.clear()
+	t.done()
 
 func _spawn() -> Node2D:
 	var main: Node2D = MAIN.instantiate()

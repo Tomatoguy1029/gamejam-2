@@ -36,10 +36,20 @@ func report() -> void:
 	for f in _failures:
 		print("  FAILED: " + f)
 
-## これまでに記録したアサーション数。TestRunner が「テストが1つも
-## アサーションを残さずに終わった＝途中で異常終了した」を検出するのに使う。
-func count() -> int:
-	return _pass + _fail
+## 各テストが最後に done() を呼んだか。TestRunner が「途中でスクリプトエラーが
+## 起きて打ち切られた」を検出するのに使う。GDScript の実行時エラーは例外にならず
+## その場で関数を抜けるだけなので、完走マーカーが無いと失敗を見逃す。
+var _done: bool = false
+
+## 各テストの run_tests() の最後で必ず呼ぶ。
+func done() -> void:
+	_done = true
+
+func is_done() -> bool:
+	return _done
+
+func reset_done() -> void:
+	_done = false
 
 func exit_code() -> int:
 	return 0 if _fail == 0 else 1

@@ -45,3 +45,4 @@ func run_tests(t: TestAssert) -> void:
 	t.eq("別プロセスの消費が親側にも反映される（R-1）", DebugLaunch.consume(), 0)
 
 	DebugLaunch.clear()
+	t.done()

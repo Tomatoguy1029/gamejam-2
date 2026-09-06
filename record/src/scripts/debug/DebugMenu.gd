@@ -72,6 +72,10 @@ func _build_items() -> void:
 		labels.append("Stage %d" % index)
 	_add_list("移動", labels, _goto_stage)
 
+	_add_section("ループ")
+	_add_int("ゴースト数", func() -> int: return LoopManager.max_ghosts,
+			_set_max_ghosts, 0, 8)
+
 	_add_section("状態")
 	_add_info("GameState", func() -> String: return _state_name())
 
@@ -87,15 +91,15 @@ func _add_section(title: String) -> void:
 	_items.add_child(label)
 
 ## ボタン1つ。単発の操作に使う。
-func _add_action(label: String, on_press: Callable) -> void:
+func _add_action(label: String, on_press: Callable) -> Control:
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(on_press)
-	_items.add_child(_row(label, button))
+	return _add_row(_row(label, button))
 
 ## − / 数値 / ＋ の整数スピナー。
 func _add_int(label: String, getter: Callable, setter: Callable,
-		min_value: int, max_value: int) -> void:
+		min_value: int, max_value: int) -> Control:
 	var value := Label.new()
 	value.custom_minimum_size = Vector2(56, 0)
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -113,20 +117,20 @@ func _add_int(label: String, getter: Callable, setter: Callable,
 	plus.text = "＋"
 	plus.pressed.connect(func() -> void: apply.call(1))
 
-	_items.add_child(_row(label, minus, value, plus))
+	return _add_row(_row(label, minus, value, plus))
 
 ## チェックボックス。ON/OFF のフラグに使う。
-func _add_bool(label: String, getter: Callable, setter: Callable) -> void:
+func _add_bool(label: String, getter: Callable, setter: Callable) -> Control:
 	var check := CheckBox.new()
 	check.button_pressed = bool(getter.call())
 	check.toggled.connect(func(on: bool) -> void:
 		setter.call(on)
 		check.button_pressed = bool(getter.call())
 	)
-	_items.add_child(_row(label, check))
+	return _add_row(_row(label, check))
 
 ## ボタンの並び。ステージ一覧のような選択肢に使う。
-func _add_list(label: String, labels: PackedStringArray, on_select: Callable) -> void:
+func _add_list(label: String, labels: PackedStringArray, on_select: Callable) -> Control:
 	var box := HBoxContainer.new()
 	for i in labels.size():
 		var button := Button.new()
@@ -134,14 +138,14 @@ func _add_list(label: String, labels: PackedStringArray, on_select: Callable) ->
 		var index := i
 		button.pressed.connect(func() -> void: on_select.call(index))
 		box.add_child(button)
-	_items.add_child(_row(label, box))
+	return _add_row(_row(label, box))
 
 ## 読み取り専用の表示。メニューを開くたびに getter を評価し直す。
-func _add_info(label: String, getter: Callable) -> void:
+func _add_info(label: String, getter: Callable) -> Control:
 	var value := Label.new()
 	value.text = str(getter.call())
 	_infos.append([value, getter])
-	_items.add_child(_row(label, value))
+	return _add_row(_row(label, value))
 
 # ── 項目の中身 ────────────────────────────────────────────────────────────────
 
@@ -164,6 +168,15 @@ func _scan_levels() -> Array[int]:
 	out.sort()
 	return out
 
+## 使えるゴーストの数を変える。値を書き換えただけでは HUD やバッテリーに
+## 再描画の契機が無いので、現在の状態を入れ直して購読者に更新させる。
+##
+## IDLE 中はこれでアクターの再配置とワールドリセットも走るが、盤面が初期状態に
+## 戻るだけで実害はない（デバッグ用途としてはむしろ都合がよい）。
+func _set_max_ghosts(value: int) -> void:
+	LoopManager.max_ghosts = value
+	GameManager.change_state(GameManager.current_state)
+
 ## ステージを切り替える。実ゲームのステージ選択と同じ経路（StageSelect の
 ## stage_selected シグナル）を通すため、Main にデバッグ用の入口を足さずに済む。
 func _goto_stage(position: int) -> void:
@@ -177,6 +190,12 @@ func _goto_stage(position: int) -> void:
 	select.stage_selected.emit(_stage_indices[position])
 
 # ── 内部 ──────────────────────────────────────────────────────────────────────
+
+## 作った行をメニューに並べ、そのまま返す。
+## 返り値は呼び出し側での微調整とテストのために使う。
+func _add_row(row: Control) -> Control:
+	_items.add_child(row)
+	return row
 
 ## 「ラベル ＋ 任意個のコントロール」の 1 行を作る。
 func _row(label: String, control_a: Control, control_b: Control = null,

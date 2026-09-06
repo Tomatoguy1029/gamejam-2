@@ -29,6 +29,33 @@ func run_tests(t: TestAssert) -> void:
 	t.ok("移動したらメニューは閉じる", not menu.is_open)
 	t.ok("移動後は入力ロックが解除される", not GameManager.input_locked)
 
+	# ── ゴースト数 ────────────────────────────────────────
+	menu.set_open(true)
+	t.eq("初期値はステージの max_ghosts（Level003 は 2）", LoopManager.max_ghosts, 2)
+	_find_button(items, "＋").pressed.emit()
+	t.eq("＋ で増える", LoopManager.max_ghosts, 3)
+	_find_button(items, "−").pressed.emit()
+	_find_button(items, "−").pressed.emit()
+	t.eq("− で減る", LoopManager.max_ghosts, 1)
+	_find_button(items, "−").pressed.emit()
+	t.eq("下限 0 でクランプする", LoopManager.max_ghosts, 0)
+
+	# ── R-3: 保存済み本数より小さくしても HUD が壊れないか ──
+	LoopManager.max_ghosts = 3
+	LoopManager.add_ghost(GhostData.new())
+	LoopManager.add_ghost(GhostData.new())
+	t.eq("ゴーストを2本保存した状態にする", LoopManager.ghost_count, 2)
+	_find_button(items, "−").pressed.emit()
+	_find_button(items, "−").pressed.emit()
+	t.eq("保存済みより小さい上限にできる", LoopManager.max_ghosts, 1)
+	t.ok("上限に達した扱いになる", LoopManager.is_at_limit)
+
+	GameManager.change_state(GameManager.GameState.PLAY_ENDED)
+	await get_tree().process_frame
+	var icons: HBoxContainer = main.get_node("HUD/PlayEndedPanel/VBox/GhostIcons")
+	t.eq("HUD のスロットは上限ぶんだけ並ぶ（保存済み2 > 上限1 でも壊れない）",
+		icons.get_child_count(), 1)
+
 	main.queue_free()
 	await get_tree().process_frame
 	GameManager.current_state = GameManager.GameState.MAIN_MENU
@@ -38,6 +65,7 @@ func run_tests(t: TestAssert) -> void:
 	GameManager.input_locked = false
 	DebugLaunch.clear()
 	await get_tree().process_frame
+	t.done()
 
 func _find_button(root: Node, text: String) -> Button:
 	for child in root.get_children():

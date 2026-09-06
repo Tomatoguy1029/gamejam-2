@@ -24,13 +24,13 @@ func _ready() -> void:
 		add_child(node)
 		t.begin(path.get_file())
 		if node.has_method("run_tests"):
-			var before: int = t.count()
+			t.reset_done()
 			await node.run_tests(t)
-			# テスト中にスクリプトエラーが起きると途中で打ち切られるが、
-			# それ自体は例外にならない。アサーションが1件も無い＝異常終了とみなす。
-			if t.count() == before:
-				t.ok("アサーションが1件以上あること", false,
-					"途中でスクリプトエラーが起きた可能性がある")
+			# 実行時エラーは例外にならず関数を抜けるだけなので、末尾の done() が
+			# 呼ばれたかどうかで「最後まで走ったか」を判定する。
+			if not t.is_done():
+				t.ok("最後まで到達すること", false,
+					"途中でスクリプトエラーが起きた可能性がある（末尾の t.done() 未到達）")
 		else:
 			t.ok("run_tests() が実装されていること", false, path)
 		node.queue_free()
