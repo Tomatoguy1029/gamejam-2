@@ -95,6 +95,34 @@ func run_tests(t: TestAssert) -> void:
 	t.eq("_add_info は開くたびに再評価される", _find_label(row, "new") != null, true)
 	menu.set_open(false)
 
+	# ── 見た目：パネルは内容の高さに収まる（画面を覆わない）──
+	var panel: Control = menu.get_node("Panel")
+	menu.set_open(true)
+	await get_tree().process_frame
+	t.ok("パネルが画面の高さを覆わない", panel.size.y < 1080.0,
+		"panel=%s" % [panel.size])
+
+	# ── 見た目：一覧が増えても見切れず折り返す ────────────
+	var many := PackedStringArray()
+	for i in 12:
+		many.append("Stage %d" % (i + 1))
+	menu._add_list("多数", many, func(_i: int) -> void: pass)
+	await menu._fit_panel()
+	await get_tree().process_frame
+
+	var panel_right: float = panel.global_position.x + panel.size.x
+	var overflow: int = 0
+	var rows := {}
+	for node in _walk(panel):
+		if node is Button and (node as Button).text.begins_with("Stage "):
+			var button := node as Button
+			if button.global_position.x + button.size.x > panel_right:
+				overflow += 1
+			rows[button.global_position.y] = true
+	t.eq("ボタンがパネルからはみ出さない", overflow, 0)
+	t.ok("12個並べたら複数行に折り返す", rows.size() > 1, "行数=%d" % rows.size())
+
+	menu.set_open(false)
 	menu.queue_free()
 	GameManager.input_locked = false
 	await get_tree().process_frame

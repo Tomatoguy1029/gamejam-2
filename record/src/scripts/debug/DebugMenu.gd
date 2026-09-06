@@ -19,7 +19,28 @@ extends CanvasLayer
 ## 痕跡を残さないため。
 @export var toggle_menu_shortcut: Shortcut
 
+# ── 見た目 ────────────────────────────────────────────────────────────────────
+# 画面は 1920x1080 なので、既定のフォントサイズだとゲーム側の HUD に比べて
+# 極端に小さく見える。ここで明示的に大きめに揃える。
+const PANEL_WIDTH: float = 780.0
+## 内容がこれを超えたらスクロールに切り替える高さ
+const MAX_CONTENT_HEIGHT: float = 860.0
+const LABEL_COLUMN_WIDTH: float = 260.0
+
+const SECTION_FONT_SIZE: int = 34
+const LABEL_FONT_SIZE: int = 24
+const BUTTON_FONT_SIZE: int = 22
+
+## 操作できる項目の見出し
+const COLOR_SECTION: Color = Color(0.45, 0.78, 1.0)
+## 表示だけの項目の見出し
+const COLOR_SECTION_READONLY: Color = Color(0.62, 0.66, 0.72)
+const COLOR_LABEL: Color = Color(0.80, 0.83, 0.87)
+## 表示だけの値。操作できるものと区別できるよう色を変える。
+const COLOR_INFO_VALUE: Color = Color(1.0, 0.85, 0.45)
+
 @onready var _panel: Control = $Panel
+@onready var _scroll: ScrollContainer = $Panel/Scroll
 @onready var _items: VBoxContainer = $Panel/Scroll/Items
 
 ## _add_info で登録した [Label, getter] の組。開くたびに再評価する。
@@ -46,6 +67,7 @@ func _ready() -> void:
 	_panel.visible = false
 	_build_items()
 	refresh_shortcuts()
+	_fit_panel()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event.is_pressed() or event.is_echo():
@@ -102,7 +124,7 @@ func _build_items() -> void:
 	_add_int("ゴースト数", func() -> int: return LoopManager.max_ghosts,
 			_set_max_ghosts, 0, 8)
 
-	_add_section("状態")
+	_add_section("状態", true)
 	_add_info("GameState", func() -> String: return _state_name())
 	_add_info("現在のステージ", _current_stage_text)
 	_add_info("保存済みゴースト", func() -> String:
@@ -111,18 +133,23 @@ func _build_items() -> void:
 # ── 登録 API ──────────────────────────────────────────────────────────────────
 
 ## 見出し。項目のグループ分けに使う。
-func _add_section(title: String) -> void:
+## readonly を true にすると「表示のみ」と明示し、操作できる節と色で区別する。
+func _add_section(title: String, readonly: bool = false) -> void:
 	if _items.get_child_count() > 0:
+		var spacer := Control.new()
+		spacer.custom_minimum_size = Vector2(0, 10)
+		_items.add_child(spacer)
 		_items.add_child(HSeparator.new())
 	var label := Label.new()
-	label.text = title
-	label.add_theme_font_size_override("font_size", 26)
+	label.text = title + ("　（表示のみ）" if readonly else "")
+	label.add_theme_font_size_override("font_size", SECTION_FONT_SIZE)
+	label.add_theme_color_override("font_color",
+		COLOR_SECTION_READONLY if readonly else COLOR_SECTION)
 	_items.add_child(label)
 
 ## ボタン1つ。単発の操作に使う。
 func _add_action(label: String, on_press: Callable) -> Control:
-	var button := Button.new()
-	button.text = label
+	var button := _make_button(label)
 	button.pressed.connect(on_press)
 	return _add_row(_row(label, button))
 
@@ -130,8 +157,9 @@ func _add_action(label: String, on_press: Callable) -> Control:
 func _add_int(label: String, getter: Callable, setter: Callable,
 		min_value: int, max_value: int) -> Control:
 	var value := Label.new()
-	value.custom_minimum_size = Vector2(56, 0)
+	value.custom_minimum_size = Vector2(64, 0)
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	value.add_theme_font_size_override("font_size", LABEL_FONT_SIZE)
 	value.text = str(getter.call())
 
 	var apply := func(delta: int) -> void:
@@ -139,11 +167,9 @@ func _add_int(label: String, getter: Callable, setter: Callable,
 		setter.call(next)
 		value.text = str(getter.call())  # setter が拒否した場合も実値を映す
 
-	var minus := Button.new()
-	minus.text = "−"
+	var minus := _make_button("−")
 	minus.pressed.connect(func() -> void: apply.call(-1))
-	var plus := Button.new()
-	plus.text = "＋"
+	var plus := _make_button("＋")
 	plus.pressed.connect(func() -> void: apply.call(1))
 
 	return _add_row(_row(label, minus, value, plus))
@@ -151,6 +177,7 @@ func _add_int(label: String, getter: Callable, setter: Callable,
 ## チェックボックス。ON/OFF のフラグに使う。
 func _add_bool(label: String, getter: Callable, setter: Callable) -> Control:
 	var check := CheckBox.new()
+	check.add_theme_font_size_override("font_size", LABEL_FONT_SIZE)
 	check.button_pressed = bool(getter.call())
 	check.toggled.connect(func(on: bool) -> void:
 		setter.call(on)
@@ -160,10 +187,11 @@ func _add_bool(label: String, getter: Callable, setter: Callable) -> Control:
 
 ## ボタンの並び。ステージ一覧のような選択肢に使う。
 func _add_list(label: String, labels: PackedStringArray, on_select: Callable) -> Control:
-	var box := HBoxContainer.new()
+	# HFlowContainer にして、ステージが増えても横に見切れず折り返すようにする
+	var box := HFlowContainer.new()
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for i in labels.size():
-		var button := Button.new()
-		button.text = labels[i]
+		var button := _make_button(labels[i])
 		var index := i
 		button.pressed.connect(func() -> void: on_select.call(index))
 		box.add_child(button)
@@ -172,6 +200,8 @@ func _add_list(label: String, labels: PackedStringArray, on_select: Callable) ->
 ## 読み取り専用の表示。メニューを開くたびに getter を評価し直す。
 func _add_info(label: String, getter: Callable) -> Control:
 	var value := Label.new()
+	value.add_theme_font_size_override("font_size", LABEL_FONT_SIZE)
+	value.add_theme_color_override("font_color", COLOR_INFO_VALUE)
 	value.text = str(getter.call())
 	_infos.append([value, getter])
 	return _add_row(_row(label, value))
@@ -243,13 +273,32 @@ func _row(label: String, control_a: Control, control_b: Control = null,
 
 	var name_label := Label.new()
 	name_label.text = label
-	name_label.custom_minimum_size = Vector2(200, 0)
+	name_label.custom_minimum_size = Vector2(LABEL_COLUMN_WIDTH, 0)
+	name_label.add_theme_font_size_override("font_size", LABEL_FONT_SIZE)
+	name_label.add_theme_color_override("font_color", COLOR_LABEL)
 	row.add_child(name_label)
 
 	for control in [control_a, control_b, control_c]:
 		if control != null:
 			row.add_child(control)
 	return row
+
+## 見た目を揃えたボタンを作る。
+func _make_button(text: String) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.add_theme_font_size_override("font_size", BUTTON_FONT_SIZE)
+	button.custom_minimum_size = Vector2(0, 40)
+	return button
+
+## 内容の高さに合わせてパネルを縮める。項目が少ないうちに画面の左半分が
+## 巨大な空の板で覆われないようにし、増えたらスクロールへ切り替える。
+func _fit_panel() -> void:
+	await get_tree().process_frame  # レイアウト確定を待つ
+	_panel.custom_minimum_size.x = PANEL_WIDTH
+	var content_height: float = _items.get_combined_minimum_size().y
+	_scroll.custom_minimum_size = Vector2(0.0, minf(content_height, MAX_CONTENT_HEIGHT))
+	_panel.reset_size()
 
 func _refresh_infos() -> void:
 	for pair in _infos:
