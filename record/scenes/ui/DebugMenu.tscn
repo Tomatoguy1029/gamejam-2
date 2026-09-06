@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/scripts/debug/DebugMenu.gd" id="1"]
+
+[sub_resource type="InputEventKey" id="key_toggle"]
+device = -1
+pressed = true
+keycode = 4194305
+
+[sub_resource type="Shortcut" id="shortcut_toggle"]
+events = [SubResource("key_toggle")]
+
+[sub_resource type="StyleBoxFlat" id="panel_bg"]
+content_margin_left = 24.0
+content_margin_top = 18.0
+content_margin_right = 24.0
+content_margin_bottom = 18.0
+bg_color = Color(0.06, 0.07, 0.09, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.28, 0.5, 0.72, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="DebugMenu" type="CanvasLayer"]
+layer = 200
+script = ExtResource("1")
+toggle_menu_shortcut = SubResource("shortcut_toggle")
+
+[node name="Panel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 820.0
+offset_bottom = 640.0
+theme_override_styles/panel = SubResource("panel_bg")
+
+[node name="Scroll" type="ScrollContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Items" type="VBoxContainer" parent="Panel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
