@@ -21,6 +21,7 @@ signal over_limit()
 signal room_retried()
 signal tutorial_hint(label: String)
 signal stages_unlocked()
+signal rewind_started()
 signal cleared()
 signal next_stage_requested()
 signal return_to_title_requested()
@@ -31,6 +32,9 @@ var input_locked: bool = false
 
 ## 全ステージ解放済みか（ステージ1クリアで true。永続化はしないので起動ごとにリセット）
 var all_stages_unlocked: bool = false
+
+## 初回保存の長い巻き戻し演出を再生済みか（永続化なし・起動ごとにリセット）
+var first_rewind_played: bool = false
 
 ## 全ステージを解放する（ステージ1クリア時に呼ぶ）
 func unlock_all_stages() -> void:
